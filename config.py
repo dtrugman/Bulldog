@@ -30,3 +30,5 @@ class Config:
 
         with open(path) as jfile:
             cls.config = json.load(jfile)
+
+        return cls.config
