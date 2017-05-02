@@ -1,3 +1,6 @@
 {
-    "target": "python"
+    "freq": 5,
+    "target": {
+        "name": "python"
+    }
 }
