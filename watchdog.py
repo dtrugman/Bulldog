@@ -1,4 +1,4 @@
-import sys, logging
+import logging
 
 from config import Config
 from config import Globals
@@ -22,16 +22,7 @@ class WatchDog:
         self._logger.info("WatchDog stopped")
 
     def _run(self):
-        config = Config.load(sys.argv)
-
-        target = config["target"]
-        freq = config["freq"]
-
-        self._logger.info("Configuration")
-        self._logger.info("-----------------------------------------------")
-        self._logger.info("Target: %s", target)
-        self._logger.info("Freq: %d", freq)
-        self._logger.info("-----------------------------------------------")
+        config = Config.load()
 
     def run(self):
         try:
