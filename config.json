@@ -1,6 +1,8 @@
 {
-    "freq": 5,
     "target": {
         "name": "python"
+    },
+    "cycler": {
+        "freq": 3
     }
 }
