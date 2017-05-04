@@ -12,7 +12,7 @@ class Cycler(object):
     """
 
     def __init__(self, freq, action, *args, **kwargs):
-        self.logger = logging.getLogger('watchdog')
+        self.logger = logging.getLogger(__name__)
         self.freq = freq
         self.action = action
         self.args = args
@@ -20,13 +20,13 @@ class Cycler(object):
         self.timer = None
 
     def _intro(self):
-        self.logger.info("Cycler starting")
+        self.logger.info("Starting")
 
     def _outro(self):
-        self.logger.info("Cycler stopped")
+        self.logger.info("Stopped")
 
     def _trigger(self):
-        self.logger.info("Cycler executing")
+        self.logger.info("Executing")
         self.action(*self.args, **self.kwargs)
         self._register()
 

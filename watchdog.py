@@ -10,21 +10,21 @@ class WatchDog(object):
 
     def __init__(self):
         logging.basicConfig(level=logging.DEBUG,
-                            format='%(asctime)s :: %(levelname)s :: %(message)s')
-        self.logger = logging.getLogger('watchdog')
+                            format='%(asctime)s :: %(levelname)s :: %(name)s :: %(message)s')
+        self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         self.cycler = None
 
     def _intro(self):
         self.logger.info("-----------------------------------------------")
-        self.logger.info("WatchDog starting")
+        self.logger.info("Starting")
         self.logger.info("-----------------------------------------------")
         self.logger.info("Version: %s", Globals.VERSION)
         self.logger.info("Build:   %d", Globals.BUILD)
         self.logger.info("-----------------------------------------------")
 
     def _outro(self):
-        self.logger.info("WatchDog stopped")
+        self.logger.info("Stopped")
 
     def _trigger(self):
         return
