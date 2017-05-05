@@ -18,7 +18,6 @@ class WatchDog(object):
         self.stopped = threading.Event()
 
         self.cycler = None
-        self.cycler_conf = None
 
         self.investigator = None
         self.investigator_conf = None
@@ -34,21 +33,6 @@ class WatchDog(object):
     def _outro(self):
         self.logger.info("Stopped")
 
-    def _cycler_trigger(self):
-        manifest = self.cycler_conf["manifest"]
-        for item in manifest:
-            for check in item["check"]:
-                self.logger.info("Investigating %s", check)
-
-    def _cycler_start(self, config):
-        # TODO: Check config contains what we expect
-        self.cycler_conf = config
-        self.cycler = Cycler(self.cycler_conf["freq"], self._cycler_trigger)
-        self.cycler.start()
-
-    def _cycler_stop(self):
-        self.cycler.stop()
-
     def _investigator_start(self, config):
         # TODO: Check config contains what we expect
         self.investigator_conf = config
@@ -60,11 +44,15 @@ class WatchDog(object):
 
     def _run(self):
         config = Config.load()
+
         self._investigator_start(config["investigator"])
-        self._cycler_start(config["cycler"])
+
+        self.cycler = Cycler(config["cycler"], self.investigator)
+        self.cycler.start()
 
     def _stop(self):
-        self._cycler_stop()
+        self.cycler.stop()
+
         self._investigator_stop()
 
     def run(self):

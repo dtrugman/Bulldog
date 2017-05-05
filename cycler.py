@@ -3,21 +3,20 @@ Defines the Cycler class
 """
 
 import logging
-import threading
+
+from periodic_timer import PeriodicTimer
 
 class Cycler(object):
     """
-    A simple object that works as a periodic timer
-    and executes an action each time it's triggered
+    A simple object that uses a periodic timer and
+    pushes investigation requests each time it's triggered
     """
 
-    def __init__(self, freq, action, *args, **kwargs):
+    def __init__(self, config, investigator):
         self.logger = logging.getLogger(__name__)
-        self.freq = freq
-        self.action = action
-        self.args = args
-        self.kwargs = kwargs
-        self.timer = None
+        self.config = config
+        self.investigator = investigator
+        self.periodic_timer = PeriodicTimer(self.config["freq"], self._trigger)
 
     def _intro(self):
         self.logger.info("Starting")
@@ -26,19 +25,17 @@ class Cycler(object):
         self.logger.info("Stopped")
 
     def _trigger(self):
-        self.logger.info("Executing")
-        self.action(*self.args, **self.kwargs)
-        self._register()
-
-    def _register(self):
-        self.timer = threading.Timer(self.freq, self._trigger)
-        self.timer.start()
+        manifest = self.config["manifest"]
+        for item in manifest:
+            for check in item["check"]:
+                self.logger.info("Enqueuing request: %s", check)
+                self.investigator.enqueue(check)
 
     def stop(self):
         """
         Stop the cycler
         """
-        self.timer.cancel()
+        self.periodic_timer.stop()
         self._outro()
 
     def start(self):
@@ -47,4 +44,4 @@ class Cycler(object):
         It will execute the specified action every 'freq' seconds
         """
         self._intro()
-        self._register()
+        self.periodic_timer.start()
