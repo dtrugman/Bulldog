@@ -2,7 +2,27 @@
     "target": {
         "name": "python"
     },
+    "investigator": {
+        "memory": {
+            "threshold": 1000,
+            "period": 10
+        },
+        "cpu": {
+            "threshold": 95,
+            "period": 10
+        }
+    },
     "cycler": {
-        "freq": 3
+        "freq": 1,
+        "manifest": [
+            {
+                "check": [ "running" ],
+                "do": [ "start" ]
+            },
+            {
+                "check": [ "memory", "cpu" ],
+                "do": [ "restart" ]
+            }
+        ]
     }
 }
