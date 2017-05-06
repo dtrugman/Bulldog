@@ -36,7 +36,8 @@ class WatchDog(object):
     def _run(self):
         config = Config.load()
 
-        self.handler = Handler()
+        self.handler = Handler(config["target"],
+                               config["handler"])
         self.handler.start()
 
         self.investigator = Investigator(config["target"],
@@ -59,7 +60,7 @@ class WatchDog(object):
         try:
             self._intro()
             self._run()
-            self.stopped.wait(3) # Fake 3 sec run
+            self.stopped.wait(30) # Fake 30 sec run
             self._stop()
         except Exception as ex:
             self.logger.error(ex.message)

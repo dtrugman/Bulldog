@@ -1,6 +1,12 @@
 {
     "target": {
-        "name": "python"
+        "name": "cpu_eater.out"
+    },
+    "handler": {
+        "start": {
+            "cmd": "/home/dt/Documents/WatchDog/examples/cpu_eater.out",
+            "args": ""
+        }
     },
     "investigator": {
         "memory": {
@@ -11,7 +17,7 @@
         }
     },
     "cycler": {
-        "freq": 1,
+        "freq": 5,
         "manifest": [
             {
                 "check": [ "running" ],
