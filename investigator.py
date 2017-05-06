@@ -5,12 +5,13 @@ import Queue
 
 class Investigator(threading.Thread):
 
-    def __init__(self, target, config):
+    def __init__(self, target, config, handler):
         threading.Thread.__init__(self)
         self.logger = logging.getLogger(__name__)
         self.queue = Queue.Queue()
         self.target = target
         self.config = config
+        self.handler = handler
         self.stopped = False
         self.checks = {
             "running": self._check_running,
@@ -84,7 +85,11 @@ class Investigator(threading.Thread):
             action_required = self.checks[check](target)
             self.logger.info("Check [%s] action required? %s", check, action_required)
             if action_required:
-                pass
+                handler_request = {
+                    "target": target,
+                    "react": react
+                }
+                self.handler.enqueue(handler_request)
 
     def _process(self, request):
         # We assume every request needs to know the process' pid
