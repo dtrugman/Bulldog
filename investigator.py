@@ -79,17 +79,22 @@ class Investigator(threading.Thread):
         else:
             self.logger.info("Processting target [%s] pid [%d]", target.name(), target.pid)
 
+        action_required = False
+
         react = request["react"]
         for check in request["check"]:
             self.logger.info("Processing request: %s -> %s", check, react)
-            action_required = self.checks[check](target)
-            self.logger.info("Check [%s] action required? %s", check, action_required)
-            if action_required:
-                handler_request = {
-                    "target": target,
-                    "react": react
-                }
-                self.handler.enqueue(handler_request)
+            if self.checks[check](target):
+                self.logger.info("Check [%s] requires action!", check)
+                action_required = True
+                break
+
+        if action_required:
+            handler_request = {
+                "target": target,
+                "react": react
+            }
+            self.handler.enqueue(handler_request)
 
     def _process(self, request):
         # We assume every request needs to know the process' pid
