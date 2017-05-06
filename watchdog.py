@@ -63,7 +63,8 @@ class WatchDog(object):
         try:
             self._intro()
             self._run()
-            self.stopped.wait(3) # Fake 30 sec run
+            #self.stopped.wait()
+            raw_input("")
         except Exception as ex:
             self.logger.error(ex.message)
         finally:
