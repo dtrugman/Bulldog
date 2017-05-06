@@ -7,8 +7,7 @@
     },
     "investigator": {
         "target": {
-            "cmd": "/home/dt/Documents/WatchDog/examples/mem_eater.out",
-            "args": [ ]
+            "exe": "/home/dt/Documents/WatchDog/examples/mem_eater.out"
         },
         "memory": {
             "threshold": 100000000
