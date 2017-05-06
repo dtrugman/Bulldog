@@ -19,7 +19,9 @@ class Investigator(threading.Thread):
         self.logger.info("Stopped")
 
     def _process(self, request):
-        self.logger.info("Processing request: %s", request)
+        react = request["react"]
+        for check in request["check"]:
+            self.logger.info("Processing request: %s -> %s", check, react)
 
     def enqueue(self, request):
         """

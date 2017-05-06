@@ -27,9 +27,8 @@ class Cycler(object):
     def _trigger(self):
         manifest = self.config["manifest"]
         for item in manifest:
-            for check in item["check"]:
-                self.logger.info("Enqueuing request: %s", check)
-                self.investigator.enqueue(check)
+            self.logger.info("Enqueuing request: %s", item)
+            self.investigator.enqueue(item)
 
     def stop(self):
         """

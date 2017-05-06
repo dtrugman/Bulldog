@@ -17,11 +17,11 @@
         "manifest": [
             {
                 "check": [ "running" ],
-                "do": [ "start" ]
+                "react": [ "start" ]
             },
             {
                 "check": [ "memory", "cpu" ],
-                "do": [ "restart" ]
+                "react": [ "restart" ]
             }
         ]
     }
