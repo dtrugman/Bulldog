@@ -34,7 +34,7 @@ class WatchDog(object):
     def _run(self):
         config = Config.load()
 
-        self.investigator = Investigator(config)
+        self.investigator = Investigator(config["target"], config["investigator"])
         self.investigator.start()
 
         self.cycler = Cycler(config["cycler"], self.investigator)

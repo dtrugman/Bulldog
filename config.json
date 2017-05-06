@@ -4,12 +4,10 @@
     },
     "investigator": {
         "memory": {
-            "threshold": 1000,
-            "period": 10
+            "threshold": 1000
         },
         "cpu": {
-            "threshold": 95,
-            "period": 10
+            "threshold": 95
         }
     },
     "cycler": {
