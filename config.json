@@ -1,13 +1,13 @@
 {
     "handler": {
         "start": {
-            "cmd": "/home/dt/Documents/WatchDog/examples/cpu_eater.out",
+            "cmd": "/home/dt/Documents/WatchDog/examples/mem_eater.out",
             "args": [ ]
         }
     },
     "investigator": {
         "target": {
-            "cmd": "/home/dt/Documents/WatchDog/examples/cpu_eater.out",
+            "cmd": "/home/dt/Documents/WatchDog/examples/mem_eater.out",
             "args": [ ]
         },
         "memory": {
@@ -18,7 +18,7 @@
         }
     },
     "cycler": {
-        "freq": 2,
+        "freq": 5,
         "manifest": [
             {
                 "check": [ "running" ],
