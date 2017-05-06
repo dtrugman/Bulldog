@@ -2,7 +2,7 @@
     "handler": {
         "start": {
             "cmd": "/home/dt/Documents/WatchDog/examples/cpu_eater.out",
-            "args": ""
+            "args": [ ]
         }
     },
     "investigator": {
