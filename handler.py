@@ -67,10 +67,11 @@ class Handler(threading.Thread):
             self.logger.info("Stop skipped, target not active")
             return
 
-        if self.stop:
+        if self.stop_cmd:
             subprocess.Popen(self.stop_cmd)
         else:
-            target.terminate().wait(timeout=3)
+            target.terminate()
+            target.wait(timeout=3)
 
         self.logger.info("Stop issued!")
 
