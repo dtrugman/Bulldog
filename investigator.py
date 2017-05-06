@@ -51,7 +51,11 @@ class Investigator(threading.Thread):
         if target is None:
             self.logger.info("Target not running, skipping")
             return False
-        return False
+
+        mem = target.memory_full_info() # Linux/OSX/Win only
+        threshold = self.config["memory"]["threshold"]
+        self.logger.info("Target memory[%d] threshold[%d]", mem.uss, threshold)
+        return mem.uss > threshold
 
     def _check_cpu(self, target):
         """
@@ -63,7 +67,11 @@ class Investigator(threading.Thread):
         if target is None:
             self.logger.info("Target not running, skipping")
             return False
-        return False
+
+        cpu = target.cpu_percent(interval=1)
+        threshold = self.config["cpu"]["threshold"]
+        self.logger.info("Target cpu[%d] threshold[%d]", cpu, threshold)
+        return cpu > threshold
 
     def _process_target(self, target, request):
         if target is None:
