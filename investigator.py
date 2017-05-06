@@ -1,7 +1,8 @@
-import psutil
 import logging
 import threading
 import Queue
+
+from spotter import Spotter
 
 class Investigator(threading.Thread):
 
@@ -12,6 +13,7 @@ class Investigator(threading.Thread):
         self.config = config
         self.handler = handler
         self.stopped = False
+        self.spotter = Spotter(self.config["target"])
         self.checks = {
             "running": self._check_running,
             "memory": self._check_memory,
@@ -23,23 +25,6 @@ class Investigator(threading.Thread):
 
     def _outro(self):
         self.logger.info("Stopped")
-
-    def _is_target(self, proc):
-        target_cmdline = []
-        target_cmdline.append(self.config["target"]["cmd"])
-        if self.config["target"]["args"]:
-            target_cmdline.append(self.config["target"]["args"])
-        else:
-            target_cmdline.append("")
-
-        return proc.cmdline() == target_cmdline
-
-    def _get_running_targets(self):
-        """
-        Returns an array of psutil handles to target processes
-        The array will be empty if the target is not running
-        """
-        return [proc for proc in psutil.process_iter() if self._is_target(proc)]
 
     def _check_running(self, target):
         """
@@ -105,15 +90,14 @@ class Investigator(threading.Thread):
             self.handler.enqueue(handler_request)
 
     def _process(self, request):
-        # We assume every request needs to know the process' pid
-        # so we always get it here
-        targets = self._get_running_targets()
+        target_procs = self.spotter.get_targets()
         # Target not running, push fake value to allow the running test to handle it
-        if not targets:
-            targets.append(None)
+        if not target_procs:
+            target_procs.append(None)
 
-        for target in targets:
-            self._process_target(target, request)
+        # For each target, process request
+        for proc in target_procs:
+            self._process_target(proc, request)
 
     def enqueue(self, request):
         """
