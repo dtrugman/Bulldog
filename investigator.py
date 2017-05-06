@@ -8,7 +8,6 @@ class Investigator(threading.Thread):
     def __init__(self, target, config):
         threading.Thread.__init__(self)
         self.logger = logging.getLogger(__name__)
-        self.cond = threading.Condition()
         self.queue = Queue.Queue()
         self.target = target
         self.config = config
