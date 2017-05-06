@@ -10,7 +10,7 @@
     },
     "investigator": {
         "memory": {
-            "threshold": 1000
+            "threshold": 100000000
         },
         "cpu": {
             "threshold": 95
