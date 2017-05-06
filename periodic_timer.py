@@ -26,7 +26,7 @@ class PeriodicTimer(object):
         self.logger.info("Stopped")
 
     def _trigger(self):
-        self.logger.info("Executing")
+        self.logger.info("Triggered")
         self.action(*self.args, **self.kwargs)
         self._register()
 
