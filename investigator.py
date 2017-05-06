@@ -6,19 +6,50 @@ from spotter import Spotter
 
 class Investigator(threading.Thread):
 
+    KEY_MEMORY = "memory"
+    KEY_CPU = "cpu"
+
+    KEY_THRESHOLD = "threshold"
+
     def __init__(self, config, handler):
         threading.Thread.__init__(self)
         self.logger = logging.getLogger(__name__)
+
+        self._configure(config) # Must come first after logger init
+
         self.queue = Queue.Queue()
-        self.config = config
-        self.handler = handler
         self.stopped = False
+
         self.spotter = Spotter(self.config["target"])
+
+        self.handler = handler
         self.checks = {
             "running": self._check_running,
             "memory": self._check_memory,
             "cpu": self._check_cpu
         }
+
+    def _configure(self, config):
+        """
+        Reads and validates configuration
+        """
+        try:
+            self.logger.info("Configuration:")
+
+            # Save original config
+            self.config = config
+
+            # Get memory inspector configuration
+            self.memory = self.config[Investigator.KEY_MEMORY]
+            self.memory_threshold = self.memory[Investigator.KEY_THRESHOLD]
+            self.logger.info("Memory threshold: %d", self.memory_threshold)
+
+            # Get cpu inspector configuration
+            self.cpu = self.config[Investigator.KEY_CPU]
+            self.cpu_threshold = self.cpu[Investigator.KEY_THRESHOLD]
+            self.logger.info("CPU threshold: %d", self.cpu_threshold)
+        except KeyError as err:
+            raise RuntimeError("Bad {0} configuration: {1}".format(__name__, err))
 
     def _intro(self):
         self.logger.info("Starting")
@@ -46,7 +77,7 @@ class Investigator(threading.Thread):
             return False
 
         mem = target.memory_full_info() # Linux/OSX/Win only
-        threshold = self.config["memory"]["threshold"]
+        threshold = self.memory_threshold
         self.logger.info("Target memory[%d] threshold[%d]", mem.uss, threshold)
         return mem.uss > threshold
 
@@ -62,7 +93,7 @@ class Investigator(threading.Thread):
             return False
 
         cpu = target.cpu_percent(interval=1)
-        threshold = self.config["cpu"]["threshold"]
+        threshold = self.cpu_threshold
         self.logger.info("Target cpu[%d] threshold[%d]", cpu, threshold)
         return cpu > threshold
 
