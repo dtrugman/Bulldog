@@ -1,3 +1,4 @@
+import sys
 import logging
 import threading
 
@@ -18,6 +19,7 @@ class WatchDog(object):
 
         self.stopped = threading.Event()
 
+        self.config = None
         self.cycler = None
         self.investigator = None
         self.handler = None
@@ -34,16 +36,16 @@ class WatchDog(object):
         self.logger.info("Stopped")
 
     def _run(self):
-        config = Config.load()
+        self.config = Config(sys.argv)
 
-        self.handler = Handler(config["handler"])
+        self.handler = Handler(self.config["handler"])
         self.handler.start()
 
-        self.investigator = Investigator(config["investigator"],
+        self.investigator = Investigator(self.config["investigator"],
                                          self.handler)
         self.investigator.start()
 
-        self.cycler = Cycler(config["cycler"],
+        self.cycler = Cycler(self.config["cycler"],
                              self.investigator)
         self.cycler.start()
 
