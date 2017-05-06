@@ -90,14 +90,14 @@ class Investigator(threading.Thread):
             self.handler.enqueue(handler_request)
 
     def _process(self, request):
-        target_procs = self.spotter.get_targets()
+        targets = self.spotter.get_targets()
         # Target not running, push fake value to allow the running test to handle it
-        if not target_procs:
-            target_procs.append(None)
+        if not targets:
+            targets.append(None)
 
         # For each target, process request
-        for proc in target_procs:
-            self._process_target(proc, request)
+        for target in targets:
+            self._process_target(target, request)
 
     def enqueue(self, request):
         """
