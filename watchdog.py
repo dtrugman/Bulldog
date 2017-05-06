@@ -48,21 +48,24 @@ class WatchDog(object):
         self.cycler.start()
 
     def _stop(self):
-        self.cycler.stop()
+        if self.cycler:
+            self.cycler.stop()
 
-        self.investigator.stop()
+        if self.investigator:
+            self.investigator.stop()
 
-        self.handler.stop()
+        if self.handler:
+            self.handler.stop()
 
     def run(self):
         try:
             self._intro()
             self._run()
             self.stopped.wait(3) # Fake 30 sec run
-            self._stop()
         except Exception as ex:
             self.logger.error(ex.message)
         finally:
+            self._stop()
             self._outro()
 
     def stop(self):
