@@ -5,12 +5,11 @@ import Queue
 
 class Handler(threading.Thread):
 
-    def __init__(self, target, config):
+    def __init__(self, config):
         threading.Thread.__init__(self)
         self.logger = logging.getLogger(__name__)
         self.queue = Queue.Queue()
         self.stopped = False
-        self.target = target
         self.config = config
         self.handlers = {
             "stop": self._target_stop,
@@ -39,16 +38,16 @@ class Handler(threading.Thread):
         self.logger.info("Stop issued!")
 
     def _target_start(self, target):
-        if "start" in self.config:
-            config = self.config["start"]
-            cmd = config["cmd"]
-        else:
-            config = self.target
-            cmd = self.target["name"]
+        if "start" not in self.config:
+            self.logger.error("Start command not defined! skipping")
+            return
 
+        config = self.config["start"]
+        cmd = config["cmd"]
         args = ""
         if "args" in config:
             args = config["args"]
+
         subprocess.Popen([cmd, args])
         self.logger.info("Start issued!")
 

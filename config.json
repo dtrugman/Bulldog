@@ -1,7 +1,4 @@
 {
-    "target": {
-        "name": "cpu_eater.out"
-    },
     "handler": {
         "start": {
             "cmd": "/home/dt/Documents/WatchDog/examples/cpu_eater.out",
@@ -9,6 +6,10 @@
         }
     },
     "investigator": {
+        "target": {
+            "cmd": "/home/dt/Documents/WatchDog/examples/cpu_eater.out",
+            "args": [ ]
+        },
         "memory": {
             "threshold": 100000000
         },
@@ -17,7 +18,7 @@
         }
     },
     "cycler": {
-        "freq": 5,
+        "freq": 2,
         "manifest": [
             {
                 "check": [ "running" ],

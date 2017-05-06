@@ -5,11 +5,10 @@ import Queue
 
 class Investigator(threading.Thread):
 
-    def __init__(self, target, config, handler):
+    def __init__(self, config, handler):
         threading.Thread.__init__(self)
         self.logger = logging.getLogger(__name__)
         self.queue = Queue.Queue()
-        self.target = target
         self.config = config
         self.handler = handler
         self.stopped = False
@@ -25,13 +24,22 @@ class Investigator(threading.Thread):
     def _outro(self):
         self.logger.info("Stopped")
 
+    def _is_target(self, proc):
+        target_cmdline = []
+        target_cmdline.append(self.config["target"]["cmd"])
+        if self.config["target"]["args"]:
+            target_cmdline.append(self.config["target"]["args"])
+        else:
+            target_cmdline.append("")
+
+        return proc.cmdline() == target_cmdline
+
     def _get_running_targets(self):
         """
         Returns an array of psutil handles to target processes
         The array will be empty if the target is not running
         """
-        target_name = self.target["name"]
-        return [proc for proc in psutil.process_iter() if proc.name() == target_name]
+        return [proc for proc in psutil.process_iter() if self._is_target(proc)]
 
     def _check_running(self, target):
         """
