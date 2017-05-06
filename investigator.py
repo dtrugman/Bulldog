@@ -22,9 +22,15 @@ class Investigator(threading.Thread):
         self.logger.info("Processing request: %s", request)
 
     def enqueue(self, request):
+        """
+        Add an investigation request
+        """
         self.queue.put(request)
 
     def stop(self):
+        """
+        Stop the investigator
+        """
         self.stopped = True
         # Insert fake item to ensure we exit the blocking the get()
         self.queue.put("*")
