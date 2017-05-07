@@ -4,12 +4,14 @@ import Queue
 
 from spotter import Spotter
 
+from mem_probe import MemoryProbe
+from cpu_probe import CpuProbe
+
 class Investigator(threading.Thread):
 
+    KEY_TARGET = "target"
     KEY_MEMORY = "memory"
     KEY_CPU = "cpu"
-
-    KEY_THRESHOLD = "threshold"
 
     def __init__(self, config, handler):
         threading.Thread.__init__(self)
@@ -20,7 +22,9 @@ class Investigator(threading.Thread):
         self.queue = Queue.Queue()
         self.stopped = False
 
-        self.spotter = Spotter(self.config["target"])
+        self.spotter = Spotter(self.config[Investigator.KEY_TARGET])
+        self.mem_probe = MemoryProbe(self.config[Investigator.KEY_MEMORY])
+        self.cpu_probe = CpuProbe(self.config[Investigator.KEY_CPU])
 
         self.handler = handler
         self.checks = {
@@ -38,16 +42,6 @@ class Investigator(threading.Thread):
 
             # Save original config
             self.config = config
-
-            # Get memory inspector configuration
-            self.memory = self.config[Investigator.KEY_MEMORY]
-            self.memory_threshold = self.memory[Investigator.KEY_THRESHOLD]
-            self.logger.info("Memory threshold: %d", self.memory_threshold)
-
-            # Get cpu inspector configuration
-            self.cpu = self.config[Investigator.KEY_CPU]
-            self.cpu_threshold = self.cpu[Investigator.KEY_THRESHOLD]
-            self.logger.info("CPU threshold: %d", self.cpu_threshold)
         except KeyError as err:
             raise RuntimeError("Bad {0} configuration: {1}".format(__name__, err))
 
@@ -63,7 +57,7 @@ class Investigator(threading.Thread):
         Return value says if check requires a reaction
         """
         self.logger.info("Checking target is running")
-        return target is None
+        return target is not None
 
     def _check_memory(self, target):
         """
@@ -71,15 +65,7 @@ class Investigator(threading.Thread):
         memory thrashold
         Return value says if check requires a reaction
         """
-        self.logger.info("Checking target memory usage")
-        if target is None:
-            self.logger.info("Target not running, skipping")
-            return False
-
-        mem = target.memory_full_info() # Linux/OSX/Win only
-        threshold = self.memory_threshold
-        self.logger.info("Target memory[%d] threshold[%d]", mem.uss, threshold)
-        return mem.uss > threshold
+        return self.mem_probe.valid(target)
 
     def _check_cpu(self, target):
         """
@@ -87,15 +73,7 @@ class Investigator(threading.Thread):
         cpu thrashold
         Return value says if check requires a reaction
         """
-        self.logger.info("Checking target cpu usage")
-        if target is None:
-            self.logger.info("Target not running, skipping")
-            return False
-
-        cpu = target.cpu_percent(interval=1)
-        threshold = self.cpu_threshold
-        self.logger.info("Target cpu[%d] threshold[%d]", cpu, threshold)
-        return cpu > threshold
+        return self.cpu_probe.valid(target)
 
     def _process_target(self, target, request):
         if target is None:
@@ -108,8 +86,8 @@ class Investigator(threading.Thread):
         react = request["react"]
         for check in request["check"]:
             self.logger.info("Processing request: %s -> %s", check, react)
-            if self.checks[check](target):
-                self.logger.info("Check [%s] requires action!", check)
+            if not self.checks[check](target):
+                self.logger.info("Check [%s] failed, action required!", check)
                 action_required = True
                 break
 
