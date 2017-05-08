@@ -15,7 +15,7 @@ class Cycler(object):
     KEY_FREQ = "freq"
     KEY_MANIFEST = "manifest"
     KEY_CHECK = "check"
-    KEY_REACT = "react"
+    KEY_REACT = "reaction"
 
     MANIFEST_ITEM = [KEY_CHECK, KEY_REACT]
 

@@ -17,6 +17,10 @@ class Handler(threading.Thread):
 
     KEY_STOP = "stop"
     KEY_START = "start"
+    KEY_RESTART = "restart"
+
+    KEY_TARGET = "target"
+    KEY_REACTION = "reaction"
 
     def __init__(self, config):
         threading.Thread.__init__(self)
@@ -28,9 +32,9 @@ class Handler(threading.Thread):
         self.stopped = False
 
         self.handlers = {
-            "stop": self._target_stop,
-            "start": self._target_start,
-            "restart": self._target_restart
+            Handler.KEY_STOP: self._target_stop,
+            Handler.KEY_START: self._target_start,
+            Handler.KEY_RESTART: self._target_restart
         }
 
     def _configure(self, config):
@@ -84,16 +88,16 @@ class Handler(threading.Thread):
         self._target_start(target)
 
     def _process(self, request):
-        target = request["target"]
-        react = request["react"]
-        for reaction in react:
+        target = request[Handler.KEY_TARGET]
+        reaction = request[Handler.KEY_REACTION]
+        for action in reaction:
             if target is None:
                 self.logger.info("Handling an inactive target -> Executing %s",
-                                 reaction)
+                                 action)
             else:
                 self.logger.info("Handling target [%s] pid [%d] -> Executing %s",
-                                 target.name(), target.pid, reaction)
-            self.handlers[reaction](target)
+                                 target.name(), target.pid, action)
+            self.handlers[action](target)
 
     def enqueue(self, request):
         """

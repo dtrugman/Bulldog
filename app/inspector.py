@@ -10,8 +10,13 @@ from cpu_probe import CpuProbe
 class Inspector(threading.Thread):
 
     KEY_TARGET = "target"
+    KEY_RUNNING = "running"
     KEY_MEMORY = "memory"
     KEY_CPU = "cpu"
+
+    KEY_CHECK = "check"
+    KEY_TARGET = "target"
+    KEY_REACTION = "reaction"
 
     def __init__(self, config, handler):
         threading.Thread.__init__(self)
@@ -28,9 +33,9 @@ class Inspector(threading.Thread):
 
         self.handler = handler
         self.checks = {
-            "running": self._check_running,
-            "memory": self._check_memory,
-            "cpu": self._check_cpu
+            Inspector.KEY_RUNNING: lambda target: target is not None,
+            Inspector.KEY_MEMORY: self.mem_probe.valid,
+            Inspector.KEY_CPU: self.cpu_probe.valid
         }
 
     def _configure(self, config):
@@ -51,29 +56,11 @@ class Inspector(threading.Thread):
     def _outro(self):
         self.logger.info("Stopped")
 
-    def _check_running(self, target):
-        """
-        Check if the target process is running
-        Return value says if check requires a reaction
-        """
-        self.logger.info("Checking target is running")
-        return target is not None
-
-    def _check_memory(self, target):
-        """
-        Check if the target process has exceeded its
-        memory thrashold
-        Return value says if check requires a reaction
-        """
-        return self.mem_probe.valid(target)
-
-    def _check_cpu(self, target):
-        """
-        Check if the target process has exceeded its
-        cpu thrashold
-        Return value says if check requires a reaction
-        """
-        return self.cpu_probe.valid(target)
+    def _handle_target(self, target, reaction):
+        self.handler.enqueue({
+            Inspector.KEY_TARGET: target,
+            Inspector.KEY_REACTION: reaction
+        })
 
     def _process_target(self, target, request):
         if target is None:
@@ -83,20 +70,16 @@ class Inspector(threading.Thread):
 
         action_required = False
 
-        react = request["react"]
-        for check in request["check"]:
-            self.logger.info("Processing request: %s -> %s", check, react)
+        reaction = request[Inspector.KEY_REACTION]
+        for check in request[Inspector.KEY_CHECK]:
+            self.logger.info("Processing request: %s -> %s", check, reaction)
             if not self.checks[check](target):
                 self.logger.info("Check [%s] failed, action required!", check)
                 action_required = True
                 break
 
         if action_required:
-            handler_request = {
-                "target": target,
-                "react": react
-            }
-            self.handler.enqueue(handler_request)
+            self._handle_target(target, reaction)
 
     def _process(self, request):
         targets = self.spotter.get_targets()
