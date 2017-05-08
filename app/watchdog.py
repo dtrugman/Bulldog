@@ -2,12 +2,12 @@ import sys
 import logging
 import threading
 
-from config import Config
-from config import Globals
+from app.config import Config
+from app.config import Globals
 
-from cycler import Cycler
-from inspector import Inspector
-from handler import Handler
+from app.cycler import Cycler
+from app.inspector import Inspector
+from app.handler import Handler
 
 class WatchDog(object):
 

@@ -2,10 +2,10 @@ import logging
 import threading
 import Queue
 
-from spotter import Spotter
+from app.spotter import Spotter
 
-from mem_probe import MemoryProbe
-from cpu_probe import CpuProbe
+from app.mem_probe import MemoryProbe
+from app.cpu_probe import CpuProbe
 
 class Inspector(threading.Thread):
 

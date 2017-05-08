@@ -4,7 +4,7 @@ Defines the Cycler class
 
 import logging
 
-from periodic_timer import PeriodicTimer
+from app.periodic_timer import PeriodicTimer
 
 class Cycler(object):
     """

@@ -7,7 +7,7 @@ import threading
 import subprocess
 import Queue
 
-from config import ConfigParser
+from app.config import ConfigParser
 
 class Handler(threading.Thread):
     """
