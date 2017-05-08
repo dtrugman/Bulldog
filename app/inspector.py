@@ -1,3 +1,7 @@
+"""
+Defines the Inspector class
+"""
+
 import logging
 import threading
 import Queue
@@ -8,6 +12,13 @@ from app.mem_probe import MemoryProbe
 from app.cpu_probe import CpuProbe
 
 class Inspector(threading.Thread):
+    """
+    A class that receives inspection & handling requests
+    It can spot running processes that are of interest to us
+    and inspect various aspects of them
+    When required, it passes on the appropriate handling requests
+    to the configured handler
+    """
 
     KEY_TARGET = "target"
     KEY_RUNNING = "running"

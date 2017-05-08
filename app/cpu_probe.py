@@ -41,12 +41,6 @@ class CpuProbe(object):
         except KeyError as err:
             raise RuntimeError("Bad {0} configuration: {1}".format(__name__, err))
 
-    def _intro(self):
-        self.logger.info("Starting")
-
-    def _outro(self):
-        self.logger.info("Stopped")
-
     def _sample_cpu(self, target):
         """
         Read the CPU usage of the target

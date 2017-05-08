@@ -57,12 +57,6 @@ class MemoryProbe(object):
         except KeyError as err:
             raise RuntimeError("Bad {0} configuration: {1}".format(__name__, err))
 
-    def _intro(self):
-        self.logger.info("Starting")
-
-    def _outro(self):
-        self.logger.info("Stopped")
-
     def _sample_rss(self, target_memory):
         return target_memory.uss
 

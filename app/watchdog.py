@@ -1,3 +1,7 @@
+"""
+Defines the WatchDog class
+"""
+
 import sys
 import logging
 import threading
@@ -10,6 +14,9 @@ from app.inspector import Inspector
 from app.handler import Handler
 
 class WatchDog(object):
+    """
+    Main watchdog object
+    """
 
     def __init__(self):
         logging.basicConfig(level=logging.DEBUG,
@@ -42,7 +49,7 @@ class WatchDog(object):
         self.handler.start()
 
         self.inspector = Inspector(self.config["inspector"],
-                                         self.handler)
+                                   self.handler)
         self.inspector.start()
 
         self.cycler = Cycler(self.config["cycler"],
@@ -59,7 +66,10 @@ class WatchDog(object):
         if self.handler:
             self.handler.stop()
 
-    def run(self):
+    def start(self):
+        """
+        Start watchdog module
+        """
         try:
             self._intro()
             self._run()
@@ -72,4 +82,7 @@ class WatchDog(object):
             self._outro()
 
     def stop(self):
+        """
+        Stop watchdog module
+        """
         self.stopped.set()
