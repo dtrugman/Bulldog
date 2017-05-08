@@ -7,8 +7,6 @@ import threading
 import subprocess
 import Queue
 
-from app.config import ConfigParser
-
 class Handler(threading.Thread):
     """
     A handler class that can stop/start/restart
@@ -21,6 +19,11 @@ class Handler(threading.Thread):
 
     KEY_TARGET = "target"
     KEY_REACTION = "reaction"
+
+    KEY_CMD = "cmd"
+    KEY_ARGS = "args"
+
+    CMD_LINE_ITEM = [KEY_CMD, KEY_ARGS]
 
     def __init__(self, config):
         threading.Thread.__init__(self)
@@ -37,6 +40,38 @@ class Handler(threading.Thread):
             Handler.KEY_RESTART: self._target_restart
         }
 
+    def _parse_cmdline(self, value):
+        """
+        Parses a value that is expected to contain a complete command line
+        """
+
+        if len(value) != len(Handler.CMD_LINE_ITEM):
+            raise KeyError("Command line item misconfigured")
+
+        for item in value:
+            if item not in Handler.CMD_LINE_ITEM:
+                raise KeyError("Command line bad key[{0}]".format(item))
+
+        if not isinstance(value[Handler.KEY_CMD], basestring):
+            raise KeyError("Command line item bad key[{0}] value: "
+                           "non-string".format(Handler.KEY_CMD))
+
+        if not isinstance(value[Handler.KEY_ARGS], list):
+            raise KeyError("Command line item bad key[{0}] value: "
+                           "not a list".format(Handler.KEY_ARGS))
+
+        for item in value[Handler.KEY_ARGS]:
+            if not isinstance(item, basestring):
+                raise KeyError("Command line item bad key[{0}] value: "
+                               "contains non-string".format(Handler.KEY_ARGS))
+
+        cmdline = [value[Handler.KEY_CMD]]
+        if value[Handler.KEY_ARGS]:
+            cmdline += value[Handler.KEY_ARGS]
+        else:
+            cmdline += [''] # We append an empty string to be compatible with psutil
+        return cmdline
+
     def _configure(self, config):
         """
         Reads and validates configuration
@@ -52,10 +87,10 @@ class Handler(threading.Thread):
             # functionality of psutil
             self.stop_cmd = []
             if Handler.KEY_STOP in self.config:
-                self.stop_cmd = ConfigParser.parse_cmdline(self.config[Handler.KEY_STOP])
+                self.stop_cmd = self._parse_cmdline(self.config[Handler.KEY_STOP])
             self.logger.info("Stop cmdline: %s", self.stop_cmd)
 
-            self.start_cmd = ConfigParser.parse_cmdline(self.config[Handler.KEY_START])
+            self.start_cmd = self._parse_cmdline(self.config[Handler.KEY_START])
             self.logger.info("Start cmdline: %s", self.start_cmd)
         except KeyError as err:
             raise RuntimeError("Bad {0} configuration: {1}".format(__name__, err))
