@@ -1,6 +1,7 @@
 # WatchDog
 
 A powerful generic watchdog
+
 Currently it's still a Work In Progress - First version will be released soon enough
 
 # Motivation
@@ -27,7 +28,7 @@ Handle it means that you can configure the WatchDog to do a certain configurable
 The application requires a single configuration file in JSON format to operate.
 The JSON is split into segments according to the internal modules of the app.
 
-## Investigator configuration
+## Inspector configuration
 
 This module is responsible for spotting any active targets running on the system,
 and analyzing the amount of resources these applications are using.

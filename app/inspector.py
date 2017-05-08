@@ -7,7 +7,7 @@ from spotter import Spotter
 from mem_probe import MemoryProbe
 from cpu_probe import CpuProbe
 
-class Investigator(threading.Thread):
+class Inspector(threading.Thread):
 
     KEY_TARGET = "target"
     KEY_MEMORY = "memory"
@@ -22,9 +22,9 @@ class Investigator(threading.Thread):
         self.queue = Queue.Queue()
         self.stopped = False
 
-        self.spotter = Spotter(self.config[Investigator.KEY_TARGET])
-        self.mem_probe = MemoryProbe(self.config[Investigator.KEY_MEMORY])
-        self.cpu_probe = CpuProbe(self.config[Investigator.KEY_CPU])
+        self.spotter = Spotter(self.config[Inspector.KEY_TARGET])
+        self.mem_probe = MemoryProbe(self.config[Inspector.KEY_MEMORY])
+        self.cpu_probe = CpuProbe(self.config[Inspector.KEY_CPU])
 
         self.handler = handler
         self.checks = {

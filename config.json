@@ -5,7 +5,7 @@
             "args": [ ]
         }
     },
-    "investigator": {
+    "inspector": {
         "target": {
             "exe": "/home/dt/Documents/WatchDog/examples/mem_eater.out"
         },

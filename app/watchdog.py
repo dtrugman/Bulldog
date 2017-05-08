@@ -6,7 +6,7 @@ from config import Config
 from config import Globals
 
 from cycler import Cycler
-from investigator import Investigator
+from inspector import Inspector
 from handler import Handler
 
 class WatchDog(object):
@@ -21,7 +21,7 @@ class WatchDog(object):
 
         self.config = None
         self.cycler = None
-        self.investigator = None
+        self.inspector = None
         self.handler = None
 
     def _intro(self):
@@ -41,20 +41,20 @@ class WatchDog(object):
         self.handler = Handler(self.config["handler"])
         self.handler.start()
 
-        self.investigator = Investigator(self.config["investigator"],
+        self.inspector = Inspector(self.config["inspector"],
                                          self.handler)
-        self.investigator.start()
+        self.inspector.start()
 
         self.cycler = Cycler(self.config["cycler"],
-                             self.investigator)
+                             self.inspector)
         self.cycler.start()
 
     def _stop(self):
         if self.cycler:
             self.cycler.stop()
 
-        if self.investigator:
-            self.investigator.stop()
+        if self.inspector:
+            self.inspector.stop()
 
         if self.handler:
             self.handler.stop()
