@@ -39,38 +39,20 @@ class Spotter(object):
 
     def _compile_filters(self):
         self.supported_filters = {
-            Spotter.KEY_NAME: self._name_filter,
-            Spotter.KEY_EXE: self._exe_filter,
-            Spotter.KEY_CMDLINE: self._cmdline_filter,
-            Spotter.KEY_CWD: self._cwd_filter,
-            Spotter.KEY_USERNAME: self._username_filter
+            Spotter.KEY_NAME: lambda proc: proc.name() == self.config[Spotter.KEY_NAME],
+            Spotter.KEY_EXE: lambda proc: proc.exe() == self.config[Spotter.KEY_EXE],
+            Spotter.KEY_CMDLINE: lambda proc: proc.cmdline() == self.config[Spotter.KEY_CMDLINE],
+            Spotter.KEY_CWD: lambda proc: proc.cwd() == self.config[Spotter.KEY_CWD],
+            Spotter.KEY_USERNAME: lambda proc: proc.username() == self.config[Spotter.KEY_USERNAME]
         }
 
+        requested_filters = [key for key in self.config
+                             if key in self.supported_filters]
+        self.logger.info("Filters: %s", requested_filters)
+
         self.active_filters = [self.supported_filters[key]
-                               for key in self.config
-                               if key in self.supported_filters]
-        self.logger.info("Filters: %s", self.active_filters)
-
-    def _intro(self):
-        self.logger.info("Starting")
-
-    def _outro(self):
-        self.logger.info("Stopped")
-
-    def _name_filter(self, proc):
-        return proc.name() == self.config[Spotter.KEY_NAME]
-
-    def _exe_filter(self, proc):
-        return proc.exe() == self.config[Spotter.KEY_EXE]
-
-    def _cmdline_filter(self, proc):
-        return proc.cmdline() == self.config[Spotter.KEY_CMDLINE]
-
-    def _cwd_filter(self, proc):
-        return proc.cwd() == self.config[Spotter.KEY_CWD]
-
-    def _username_filter(self, proc):
-        return proc.username() == self.config[Spotter.KEY_USERNAME]
+                               for key in requested_filters]
+        # We don't use beautiful one-line comprehension so we could log the active filter
 
     def _filter(self, proc):
         try:
