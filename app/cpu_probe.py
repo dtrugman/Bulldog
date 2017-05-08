@@ -3,7 +3,6 @@ Defines the CpuProbe class
 """
 
 import logging
-import time
 
 class CpuProbe(object):
     """
