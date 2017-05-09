@@ -7,7 +7,7 @@ import logging
 import threading
 
 from app.config import Config
-from app.config import Globals
+from app.version import Version
 
 from app.cycler import Cycler
 from app.inspector import Inspector
@@ -32,11 +32,10 @@ class WatchDog(object):
         self.handler = None
 
     def _intro(self):
-        self.logger.info("-----------------------------------------------")
         self.logger.info("Starting")
         self.logger.info("-----------------------------------------------")
-        self.logger.info("Version: %s", Globals.VERSION)
-        self.logger.info("Build:   %d", Globals.BUILD)
+        self.logger.info("Version: %s", Version.VERSION)
+        self.logger.info("Build:   %s", Version.BUILD)
         self.logger.info("-----------------------------------------------")
 
     def _outro(self):

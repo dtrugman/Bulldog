@@ -1,17 +1,8 @@
 """
-Defines the Globals, Config and ConfigParsers classes
+Defines the Config class
 """
 import json
 import os
-
-class Globals(object):
-    """
-    A class that holds project wide global values
-    """
-
-    VERSION = "0.0.1"
-    BUILD = 999999
-
 
 class Config(object):
     """
