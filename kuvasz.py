@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from app.manager import Manager
+from app.runner import Runner
 
 if __name__ == "__main__":
-    Manager().start()
+    Runner().run()

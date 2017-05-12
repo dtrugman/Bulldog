@@ -2,13 +2,10 @@
 Defines the Manager class
 """
 
-import sys
 import logging
 import threading
 
-from app.config_parser import ConfigParser
 from app.version import Version
-
 from app.watchdog import Watchdog
 
 class Manager(object):
@@ -16,16 +13,15 @@ class Manager(object):
     Watchdogs manager
     """
 
-    def __init__(self):
+    def __init__(self, config):
         logging.basicConfig(level=logging.DEBUG,
+                            filename='/var/log/kuvasz/kuvasz.log',
                             format='%(asctime)s :: %(levelname)s :: %(name)s :: %(message)s')
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
 
         self.stopped = threading.Event()
-
-        self.mode = None
-        self.config = None
+        self.config = config
         self.watchdogs = {}
 
     def _intro(self):
@@ -39,10 +35,6 @@ class Manager(object):
         self.logger.info("Stopped")
 
     def _run(self):
-        config_parser = ConfigParser(sys.argv)
-        self.mode = config_parser.get_mode()
-        self.config = config_parser.get_config()
-
         for app in self.config:
             self.watchdogs[app] = Watchdog(app, self.config[app])
             self.watchdogs[app].start()
@@ -62,10 +54,9 @@ class Manager(object):
         try:
             self._intro()
             self._run()
-            #self.stopped.wait()
-            raw_input("")
+            self.stopped.wait()
         except Exception as err:
-            self.logger.info("Error!\n%s", err)
+            self.logger.error("Error!\n%s", err)
         finally:
             self._stop()
             self._outro()
