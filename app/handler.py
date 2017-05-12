@@ -154,5 +154,9 @@ class Handler(threading.Thread):
             request = self.queue.get()
             if self.stopped:
                 break
-            self._process(request)
+
+            try:
+                self._process(request)
+            except OSError as err:
+                self.logger.info("Handling failed: %s", err)
         self._outro()
