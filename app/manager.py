@@ -5,6 +5,7 @@ Defines the Manager class
 import sys
 import logging
 import threading
+import time
 
 from app.config import Config
 from app.version import Version
@@ -25,7 +26,7 @@ class Manager(object):
         self.stopped = threading.Event()
 
         self.config = None
-        self.watchdog = None
+        self.watchdogs = {}
 
     def _intro(self):
         self.logger.info("Starting")
@@ -38,14 +39,16 @@ class Manager(object):
         self.logger.info("Stopped")
 
     def _run(self):
-        self.config = Config(sys.argv)
+        self.config = Config.load(sys.argv)
 
-        self.watchdog = Watchdog(self.config)
-        self.watchdog.start()
+        for app in self.config:
+            self.watchdogs[app] = Watchdog(app, self.config[app])
+            self.watchdogs[app].start()
 
     def _stop(self):
-        if self.watchdog:
-            self.watchdog.stop()
+        for app in self.config:
+            if self.watchdogs[app]:
+                self.watchdogs[app].stop()
 
     def start(self):
         """
@@ -54,7 +57,8 @@ class Manager(object):
         try:
             self._intro()
             self._run()
-            self.stopped.wait()
+            #self.stopped.wait()
+            raw_input("")
         except KeyboardInterrupt:
             self.logger.info("Caught stop request")
         finally:

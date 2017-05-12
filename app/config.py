@@ -13,7 +13,11 @@ class Config(object):
     ARGS_EXE = 0
     ARGS_PATH = 1
 
-    def __init__(self, argv):
+    @staticmethod
+    def load(argv):
+        """
+        Loads the configuration file specified by the command line arguments
+        """
         if len(argv) != Config.ARGS_EXPECTED:
             raise RuntimeError("Usage: {0} <config>".format(argv[Config.ARGS_EXE]))
 
@@ -21,9 +25,8 @@ class Config(object):
         if not os.path.isfile(path):
             raise RuntimeError("Bad config file path [{0}] specified".format(path))
 
-        self.config = {}
+        config = {}
         with open(path) as jfile:
-            self.config = json.load(jfile)
+            config = json.load(jfile)
 
-    def __getitem__(self, key):
-        return self.config[key]
+        return config

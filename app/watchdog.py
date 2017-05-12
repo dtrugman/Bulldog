@@ -9,16 +9,18 @@ from app.cycler import Cycler
 from app.inspector import Inspector
 from app.handler import Handler
 
-class Watchdog(object):
+class Watchdog(threading.Thread):
     """
     A watchdog that monitors a single application
     """
 
-    def __init__(self, config):
+    def __init__(self, name, config):
+        threading.Thread.__init__(self)
         self.logger = logging.getLogger(__name__)
 
         self.stopped = threading.Event()
 
+        self.name = name
         self.config = config
 
         self.cycler = None
@@ -26,7 +28,7 @@ class Watchdog(object):
         self.handler = None
 
     def _intro(self):
-        self.logger.info("Starting")
+        self.logger.info("Starting to monitor %s", self.name)
 
     def _outro(self):
         self.logger.info("Stopped")
@@ -53,19 +55,12 @@ class Watchdog(object):
         if self.handler:
             self.handler.stop()
 
-    def start(self):
-        """
-        Start watchdog
-        """
-        try:
-            self._intro()
-            self._run()
-            self.stopped.wait()
-        except Exception as ex:
-            self.logger.error(ex.message)
-        finally:
-            self._stop()
-            self._outro()
+    def run(self):
+        self._intro()
+        self._run()
+        self.stopped.wait()
+        self._stop()
+        self._outro()
 
     def stop(self):
         """
