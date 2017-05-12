@@ -1,0 +1,70 @@
+#!/bin/sh
+
+APP_NAME=kuvasz
+CONF_NAME=config.json
+BIN_PATH=/usr/local/bin/${APP_NAME}
+
+start() {
+    ${BIN_PATH}/${APP_NAME} ${CONF_NAME} &> /dev/null &
+}
+
+stop() {
+    # Args
+    KILLALL_OPTIONS=${1}
+
+    # Use kill because there is also a loader process
+    # as a result of the pyinstaller
+    killall ${KILLALL_OPTIONS} ${APP_NAME}
+}
+
+force_stop() {
+    stop "-s 9"
+}
+
+restart() {
+    stop
+    start
+}
+
+force_reload() {
+    force_stop
+    start
+}
+
+running() {
+    ps aux | grep ${APP_NAME} | grep -v grep | grep -v /bin/sh > /dev/null && return 0 || return 1
+}
+
+status() {
+    if running; then
+        echo "${APP_NAME} running"
+    else
+        echo "${APP_NAME} not running"
+    fi
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    
+    stop)
+        stop
+        ;;
+
+    restart)
+        restart
+        ;;
+    
+    force_reload)
+        force_reload
+        ;;
+
+    status)
+        status
+        ;;
+
+    *)
+        echo "Usage: $0 {start|stop|restart|force_reload|status}"
+        ;;
+esac
