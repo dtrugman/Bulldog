@@ -1,6 +1,6 @@
-# WatchDog
+# Kuvasz
 
-A powerful generic watchdog
+A powerful royal watchdog named after the [Hungarian ancient dog bread](https://en.wikipedia.org/wiki/Kuvasz).
 
 Currently it's still a Work In Progress - First version will be released soon enough
 
@@ -13,7 +13,7 @@ it was natural to write a single configurable application that will might spare 
 
 # Design
 
-This WatchDog application is written in Python 2.*
+This watchdog application is written in Python 2.*
 It will support running in the background as a Windows Service or a Unix Daemon.
 Every once an in a while (configurable period of time) it will perform the following steps:
 
@@ -21,7 +21,7 @@ Every once an in a while (configurable period of time) it will perform the follo
 - Check if the target uses too much memory (configurable). If it is, it will handle it
 - Check if the target is using too much CPU (configurable). If it is, it will handle it
 
-Handle it means that you can configure the WatchDog to do a certain configurable set of options, e.g. stop/start/restart/alert
+Handle it means that you can configure the watchdog to do a certain configurable set of options, e.g. stop/start/restart/alert
 
 # Configuration
 

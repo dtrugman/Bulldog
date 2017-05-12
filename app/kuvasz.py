@@ -1,5 +1,5 @@
 """
-Defines the WatchDog class
+Defines the Kuvasz class
 """
 
 import sys
@@ -13,9 +13,9 @@ from app.cycler import Cycler
 from app.inspector import Inspector
 from app.handler import Handler
 
-class WatchDog(object):
+class Kuvasz(object):
     """
-    Main watchdog object
+    App object
     """
 
     def __init__(self):
@@ -67,7 +67,7 @@ class WatchDog(object):
 
     def start(self):
         """
-        Start watchdog module
+        Start module
         """
         try:
             self._intro()
@@ -82,6 +82,6 @@ class WatchDog(object):
 
     def stop(self):
         """
-        Stop watchdog module
+        Stop module
         """
         self.stopped.set()
