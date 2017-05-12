@@ -1,5 +1,5 @@
 """
-Defines the Kuvasz class
+Defines the Manager class
 """
 
 import sys
@@ -9,13 +9,11 @@ import threading
 from app.config import Config
 from app.version import Version
 
-from app.cycler import Cycler
-from app.inspector import Inspector
-from app.handler import Handler
+from app.watchdog import Watchdog
 
-class Kuvasz(object):
+class Manager(object):
     """
-    App object
+    Watchdogs manager
     """
 
     def __init__(self):
@@ -27,9 +25,7 @@ class Kuvasz(object):
         self.stopped = threading.Event()
 
         self.config = None
-        self.cycler = None
-        self.inspector = None
-        self.handler = None
+        self.watchdog = None
 
     def _intro(self):
         self.logger.info("Starting")
@@ -44,26 +40,12 @@ class Kuvasz(object):
     def _run(self):
         self.config = Config(sys.argv)
 
-        self.handler = Handler(self.config["handler"])
-        self.handler.start()
-
-        self.inspector = Inspector(self.config["inspector"],
-                                   self.handler)
-        self.inspector.start()
-
-        self.cycler = Cycler(self.config["cycler"],
-                             self.inspector)
-        self.cycler.start()
+        self.watchdog = Watchdog(self.config)
+        self.watchdog.start()
 
     def _stop(self):
-        if self.cycler:
-            self.cycler.stop()
-
-        if self.inspector:
-            self.inspector.stop()
-
-        if self.handler:
-            self.handler.stop()
+        if self.watchdog:
+            self.watchdog.stop()
 
     def start(self):
         """
@@ -72,10 +54,9 @@ class Kuvasz(object):
         try:
             self._intro()
             self._run()
-            #self.stopped.wait()
-            raw_input("")
-        except Exception as ex:
-            self.logger.error(ex.message)
+            self.stopped.wait()
+        except KeyboardInterrupt:
+            self.logger.info("Caught stop request")
         finally:
             self._stop()
             self._outro()
