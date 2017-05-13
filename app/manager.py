@@ -6,20 +6,20 @@ import logging
 import threading
 
 from app.config_parser import ConfigParser
+from app.globals import Globals
 from app.version import Version
 from app.watchdog import Watchdog
 
 class Manager(object):
     """
-    Watchdogs manager
+    Watchdogs` manager
     """
 
     def __init__(self, config_path):
         logging.basicConfig(level=logging.DEBUG,
-                            filename='/var/log/kuvasz/kuvasz.log',
-                            format='%(asctime)s :: %(levelname)s :: %(name)s :: %(message)s')
+                            filename=Globals.LOG_FILE,
+                            format=Globals.LOG_FORMAT)
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
 
         self.stopped = threading.Event()
 
