@@ -4,6 +4,7 @@
         {
             "name": "Python",
             "args": [
+                "app",
                 "config.json"
             ],
             "type": "python",
@@ -23,6 +24,7 @@
         {
             "name": "Kuvasz",
             "args": [
+                "app",
                 "config.json"
             ],
             "type": "python",

@@ -5,6 +5,7 @@ Defines the Manager class
 import logging
 import threading
 
+from app.config_parser import ConfigParser
 from app.version import Version
 from app.watchdog import Watchdog
 
@@ -13,7 +14,7 @@ class Manager(object):
     Watchdogs manager
     """
 
-    def __init__(self, config):
+    def __init__(self, config_path):
         logging.basicConfig(level=logging.DEBUG,
                             filename='/var/log/kuvasz/kuvasz.log',
                             format='%(asctime)s :: %(levelname)s :: %(name)s :: %(message)s')
@@ -21,7 +22,10 @@ class Manager(object):
         self.logger.setLevel(logging.DEBUG)
 
         self.stopped = threading.Event()
-        self.config = config
+
+        self.config_path = config_path
+        self.config = None
+
         self.watchdogs = {}
 
     def _intro(self):
@@ -35,6 +39,8 @@ class Manager(object):
         self.logger.info("Stopped")
 
     def _run(self):
+        self.config = ConfigParser.load(self.config_path)
+
         for app in self.config:
             self.watchdogs[app] = Watchdog(app, self.config[app])
             self.watchdogs[app].start()

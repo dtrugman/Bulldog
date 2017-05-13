@@ -4,7 +4,6 @@ Defines the UnixService class
 
 import os
 import signal
-import logging
 import lockfile
 import daemon
 
@@ -15,14 +14,13 @@ class UnixService(object):
     Unix service wrapper
     """
 
-    def __init__(self, config):
-        self.logger = logging.getLogger(__name__)
-        self.config = config
-
-    def start(self):
+    @staticmethod
+    def start(config_path):
         """
         Start the service
         """
-        context = daemon.DaemonContext()
+        context = daemon.DaemonContext(
+            working_directory=os.getcwd()
+        )
         with context:
-            Manager(self.config).start()
+            Manager(config_path).start()
