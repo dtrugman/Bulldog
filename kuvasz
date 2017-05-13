@@ -3,18 +3,24 @@
 APP_NAME=kuvasz
 CONF_NAME=config.json
 BIN_PATH=/usr/local/bin/${APP_NAME}
+PID_PATH=/var/run/${APP_NAME}.pid
 
 start() {
-    ${BIN_PATH}/${APP_NAME} ${CONF_NAME} &> /dev/null &
+    ${BIN_PATH}/${APP_NAME} service ${CONF_NAME} &> /dev/null &
 }
 
 stop() {
     # Args
-    KILLALL_OPTIONS=${1}
+    KILL_OPTIONS=${1}
 
-    # Use kill because there is also a loader process
-    # as a result of the pyinstaller
-    killall ${KILLALL_OPTIONS} ${APP_NAME}
+    DAEMON_PID=`cat ${PID_PATH}`
+    if [ "${DAEMON_PID}" != "" ]; then
+        # Use killall because there is also a loader process
+        # as a result of the pyinstaller
+        killall ${KILL_OPTIONS} ${APP_NAME}
+        
+        sudo rm -rf ${PID_PATH}
+    fi
 }
 
 force_stop() {
@@ -22,7 +28,7 @@ force_stop() {
 }
 
 restart() {
-    stop
+    force_stop # Regular stop not working yet
     start
 }
 
