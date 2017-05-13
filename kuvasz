@@ -6,21 +6,42 @@ BIN_PATH=/usr/local/bin/${APP_NAME}
 PID_PATH=/var/run/${APP_NAME}.pid
 
 start() {
-    ${BIN_PATH}/${APP_NAME} service ${CONF_NAME} &> /dev/null &
+    sudo ${BIN_PATH}/${APP_NAME} service ${CONF_NAME} &> /dev/null &
 }
 
 stop() {
     # Args
     KILL_OPTIONS=${1}
 
-    DAEMON_PID=`cat ${PID_PATH}`
-    if [ "${DAEMON_PID}" != "" ]; then
-        # Use killall because there is also a loader process
-        # as a result of the pyinstaller
-        killall ${KILL_OPTIONS} ${APP_NAME}
-        
-        sudo rm -rf ${PID_PATH}
+    collect_status
+
+    if [ "${PID_FROM_FILE}" != "" -a "${PID_FROM_FILE}" = "${PID_FROM_PS}" ]; then
+        kill_by_pid "${KILL_OPTIONS}" ${PID_FROM_FILE}
+    else
+        kill_by_name "${KILL_OPTIONS}" ${APP_NAME}
     fi
+
+    remove_pid_file
+}
+
+kill_by_pid() {
+    # Args
+    KILL_OPTIONS=${1}
+    KILL_PID=${2}
+
+    sudo kill ${KILL_OPTIONS} ${KILL_PID}
+}
+
+kill_by_name() {
+    # Args
+    KILL_OPTIONS=${1}
+    KILL_NAME=${2}
+
+    sudo killall ${KILL_OPTIONS} ${KILL_NAME}
+}
+
+remove_pid_file() {
+    sudo rm -rf ${PID_PATH}
 }
 
 force_stop() {
@@ -37,15 +58,20 @@ force_reload() {
     start
 }
 
-running() {
-    ps aux | grep ${APP_NAME} | grep -v grep | grep -v /bin/sh > /dev/null && return 0 || return 1
+collect_status() {
+    PID_FROM_FILE=`cat ${PID_PATH} 2> /dev/null`
+    PID_FROM_PS=`pgrep -f ${BIN_PATH}/${APP_NAME}`
 }
 
 status() {
-    if running; then
-        echo "${APP_NAME} running"
-    else
+    collect_status
+
+    if [ "${PID_FROM_FILE}" = "" -a "${PID_FROM_FILE}" = "${PID_FROM_PS}" ]; then
         echo "${APP_NAME} not running"
+    elif [ "${PID_FROM_FILE}" != "" -a "${PID_FROM_FILE}" = "${PID_FROM_PS}" ]; then
+        echo "${APP_NAME} running @ ${PID_FROM_FILE}"
+    else
+        echo "${APP_NAME} in inconsistent state [${PID_FROM_FILE}|${PID_FROM_PS}]: please restart daemon"
     fi
 }
 
@@ -55,7 +81,7 @@ case "$1" in
         ;;
     
     stop)
-        stop
+        force_stop # Stop not working yet
         ;;
 
     restart)
