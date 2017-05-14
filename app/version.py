@@ -8,5 +8,5 @@ class Version(object):
     """
 
     # These values will be replaced by the installer packer script
-    VERSION = "0.0.1"
-    BUILD = "ea65bed"
+    VERSION = "0.0.0"
+    BUILD = "BUILD"

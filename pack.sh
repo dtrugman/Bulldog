@@ -25,9 +25,14 @@ cd bin
 ./generate.sh
 cd ..
 
-# Step 3: Create the rpm
+# Step 3: Create the rpm package
 cd rpm
 ./generate.sh $VERSION_NO $BUILD_NO
+cd ..
+
+# Step 4: Create the deb package
+cd deb
+./generate.sh
 cd ..
 
 cd $PWD
