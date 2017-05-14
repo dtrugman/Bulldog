@@ -1,4 +1,22 @@
 #!/bin/sh
+#
+# /etc/init.d/kuvasz
+#
+# Author: Daniel Trugman <dtrugman@gmail.com>
+#
+
+### BEGIN INIT INFO
+# Provides:          kuvasz
+# Required-Start:    
+# Required-Stop:     
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: A royal watchdog daemon
+# Description:       A royal watchdog daemon
+#                    Allows configurable monitoring of
+#                    multiple application running on the
+#                    system simultaneously
+### END INIT INFO
 
 APP_NAME=kuvasz
 CONF_NAME=config.json
