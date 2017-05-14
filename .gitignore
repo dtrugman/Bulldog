@@ -93,3 +93,9 @@ ENV/
 
 # tags
 tags
+
+# Ignore packages
+bin/dist
+bin/build
+rpm/pkgs
+deb/pkgs
