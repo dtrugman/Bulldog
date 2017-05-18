@@ -36,10 +36,113 @@ You can choose to use one of the following ways to distribute this application:
 The application requires a single configuration file in JSON format to operate.
 The JSON is split into segments according to the internal modules of the app.
 
+## Configuration format
+
+The configuration file is a single JSON object.
+This root JSON object may contain multiple keys.
+Each key is an custom name for an application we want to watch,
+and the value for this key, is the configuration we should use for watching this application.
+The keys have not formatting requirements whatsoever.
+
+```
+{
+    "app1": {
+        // Here comes the configuration for app1's watchdog
+    },
+    "app2": {
+        // Here comes the configuration for app2's watchdog
+    },
+    ...
+    "appN": {
+        // Here comes the configuration for appN's watchdog
+    }
+}
+```
+
+Each of the watchdogs is configured in a modular manner.
+The watchdog is comprised of multiple components, each configured seperately:
+
+```
+{
+    "handler": {
+        // Here comes the handler's configuration
+    },
+    "inspector": {
+        // Here comes the inspector's configuration
+    },
+    "cycler": {
+        // Here comes the cycler's configuration
+    }
+}
+```
+
+See the following sub-chapters to understand each component configuration.
+
+## Handler configuration
+
+The handler is the internal component that handles the actual actions taken, e.g. stop/start the target application.
+Currently, the handler supports only three actions: stop, start & restart.
+
+### Start action
+
+In order to start the target application, the watchdog must be able to execute it.
+To do so, it neets to receive two configuration parameters: cmd and args.
+The configuration for the start command is nested under the handler's configuration and looks like this:
+
+```
+"handler": {
+    "start": {
+        "cmd": "/path/to/app/exec",
+        "args": [ "arg1", ... ]
+    }
+}
+```
+
+### Stop action
+
+The watchdog can stop the target application using two different ways.
+
+- It can send a kill signal to the process using its pid
+- It can execute a specific kill command specified in the configuration
+
+If you do not specify any stop configuration under the handler's configuration, the watchdog will use the first method.
+If you wish to specify a custom configuration, just use the following format (which is the same as the one for start):
+
+```
+"handler": {
+    "start": {
+        // Some start configuration
+    }, 
+    "stop": {
+        "cmd": "/path/to/killer/exec",
+        "args": [ "arg1", ... ]
+    }
+}
+```
+
+### Restart action
+
+Since a restart is merely a stop -> start sequence, there is no specific configuration for the restart command.
+
 ## Inspector configuration
 
 This module is responsible for spotting any active targets running on the system,
 and analyzing the amount of resources these applications are using.
+The inspector can perform multiple checks, each configured seperately:
+
+```
+"inspector": {
+    "target": {
+        // REQUIRED: target spotter configuration, see relevant sub-chapter
+    },
+    "memory" {
+        // REQUIRED: memory probe configuration, see relevant sub-chapter
+    },
+    "cpu": {
+        // REQUIRED: CPU probe configuration, see relevant sub-chapter
+    }
+}
+```
 
 ### Target spotter configuration
 
@@ -57,6 +160,16 @@ A process is considered our target if it matches all the specified filters.
 - cwd: The process' current working directory
 - username: The process' real owner uid
 
+Example:
+
+```
+"target": {
+    "exe": "/bin/nc",
+    "cmdline": ["nc", "-vl", "9000"],
+    "username": "root"
+}
+```
+
 ### Memory probe configuration
 
 The memory probe examines the target's memory usage.
@@ -71,6 +184,16 @@ The examination is configured using these parameters:
 - set: The memory set to examine, supported values are: rss, vms, uss, pss
        DEFAULT: uss
 
+Example:
+
+```
+"memory": {
+    "threshold": 100000000,
+    "period": 1,
+    "set": "uss"
+}
+```
+
 ### CPU probe configuration
 
 The CPU probe examines the target's CPU usage.
@@ -83,3 +206,12 @@ The examination is configured using these parameters:
 - period: The sampling period. Use 0 to sample once.
           A value of 'n' stands for 'n+1' samples, 1 second apart from each other.
           DEFAULT: 4 (5 sampling points, 1 second apart)
+
+Example:
+
+```
+"cpu": {
+    "threshold": 80,
+    "period": 2
+}
+```
