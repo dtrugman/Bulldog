@@ -8,7 +8,7 @@ RPMPKGS=../rpm/pkgs
 
 # Generate deb
 
-alien --scripts --keep-version $RPMPKGS/*
+sudo alien --scripts --keep-version $RPMPKGS/*
 if [ $? -ne 0 ]; then
     echo "deb generation failed!"
 fi
