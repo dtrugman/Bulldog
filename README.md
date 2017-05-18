@@ -1,8 +1,8 @@
-# Kuvasz
+# Bulldog
 
-A powerful royal watchdog named after the [Hungarian ancient dog bread](https://en.wikipedia.org/wiki/Kuvasz).
+A powerful & portable generic watchdog application.
 
-Currently it's still a Work In Progress - First version will be released soon enough
+Currently it's still a Work In Progress - First version will be released soon enough!
 
 # Motivation
 
@@ -22,6 +22,14 @@ Every once an in a while (configurable period of time) it will perform the follo
 - Check if the target is using too much CPU (configurable). If it is, it will handle it
 
 Handle it means that you can configure the watchdog to do a certain configurable set of options, e.g. stop/start/restart/alert
+
+# Packages
+
+You can choose to use one of the following ways to distribute this application:
+
+- Integrate this code into your existing application
+- Create a binary executable by running `generate.sh` from inside the `bin` directory
+- Craete *.rpm and *.deb packages by running `pack.sh` from the root directory
 
 # Configuration
 

@@ -22,7 +22,7 @@
             ]
         },
         {
-            "name": "Kuvasz",
+            "name": "Bulldog",
             "args": [
                 "app",
                 "config.json"
@@ -31,7 +31,7 @@
             "request": "launch",
             "stopOnEntry": true,
             "pythonPath": "${config.python.pythonPath}",
-            "program": "${workspaceRoot}/kuvasz.py",
+            "program": "${workspaceRoot}/bulldog.py",
             "cwd": "${workspaceRoot}",
             "env": null,
             "envFile": "${workspaceRoot}/.env",

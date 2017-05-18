@@ -7,7 +7,7 @@ class Globals(object):
     A class that is responsible for constant global values
     """
 
-    APP_NAME = "kuvasz"
+    APP_NAME = "bulldog"
 
     LOG_DIR = "/var/log/" + APP_NAME
     LOG_FILE = LOG_DIR + "/" + APP_NAME + ".log"

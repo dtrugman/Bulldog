@@ -15,7 +15,7 @@ rm -rf $RPMROOT
 
 # Generate rpm
 
-rpmbuild -bb --define "_version $1" --define "_build $2" --define "_projroot $PROJROOT" kuvasz.spec
+rpmbuild -bb --define "_version $1" --define "_build $2" --define "_projroot $PROJROOT" bulldog.spec
 if [ $? -ne 0 ]; then
     echo "rpm generation failed!"
 fi

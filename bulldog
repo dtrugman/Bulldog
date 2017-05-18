@@ -1,12 +1,12 @@
 #!/bin/sh
 #
-# /etc/init.d/kuvasz
+# /etc/init.d/bulldog
 #
 # Author: Daniel Trugman <dtrugman@gmail.com>
 #
 
 ### BEGIN INIT INFO
-# Provides:          kuvasz
+# Provides:          bulldog
 # Required-Start:    
 # Required-Stop:     
 # Default-Start:     2 3 4 5
@@ -18,7 +18,7 @@
 #                    system simultaneously
 ### END INIT INFO
 
-APP_NAME=kuvasz
+APP_NAME=bulldog
 CONF_NAME=config.json
 BIN_PATH=/usr/local/bin/${APP_NAME}
 PID_PATH=/var/run/${APP_NAME}.pid

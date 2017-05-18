@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
-"""Kuvasz
+"""Bulldog
 
 Usage:
-    kuvasz (service|app) <config-path>
-    kuvasz (-h | --help)
-    kuvasz --version
+    Bulldog (service|app) <config-path>
+    Bulldog (-h | --help)
+    Bulldog --version
 
 Options:
     -h --help       Show this screen
@@ -18,7 +18,7 @@ from app.version import Version
 from app.runner import Runner
 
 if __name__ == "__main__":
-    VERSION = 'Kuvasz ' + Version.VERSION + '.' + Version.BUILD
+    VERSION = 'Bulldog ' + Version.VERSION + '.' + Version.BUILD
     ARGS = docopt.docopt(__doc__, version=VERSION)
     SERVICE = ARGS['service'] # Boolean
     CONFIG_PATH = ARGS['<config-path>'] # String
