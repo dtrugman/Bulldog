@@ -39,13 +39,65 @@ The JSON is split into segments according to the internal modules of the app.
 ## Configuration format
 
 The configuration file is a single JSON object.
-This root JSON object may contain multiple keys.
-Each key is an custom name for an application we want to watch,
-and the value for this key, is the configuration we should use for watching this application.
-The keys have not formatting requirements whatsoever.
+This root JSON object shoud contain exactly two keys:
+
+- log: Holds the log infrastructure configuration
+- watchdogs: Holds the configuration for the different watchdogs
 
 ```
 {
+    "log": {
+        // REQUIRED: log infrastrucure configuration, see log section
+    },
+    "watchdogs": {
+        // REQUIRED: configuration for the diffent watchdogs 
+    }
+}
+```
+
+## Log configuration
+
+The log infrastructure requires the following values:
+
+- dir: The directory to write the log files to
+- level: A numeric values specifying the threshold of the logger (See following list)
+
+Example:
+
+```
+"log": {
+    "dir": "/var/log/bulldog/",
+    "level": 20
+}
+```
+
+### Dir configuration
+
+Just specify an absolute or relative path.
+
+If you wish to write the log files to the same dir as the binary, just use "."
+
+### Level configuration
+
+The supported log levels are:
+
+- 10 = DEBUG
+- 20 = INFO
+- 30 = WARNING
+- 40 = ERROR
+- 50 = CRITICAL
+
+**The recommended value is 20 = INFO.**
+
+## Watchdog configuration
+
+The watchdog configuration may contain multiple keys, each is a custom name for an application we want to watch,
+and their respectful values are the configurations we should use for watching these applications.
+
+The keys have no formatting restrictions.
+
+```
+watchdogs: {
     "app1": {
         // Here comes the configuration for app1's watchdog
     },
@@ -63,7 +115,7 @@ Each of the watchdogs is configured in a modular manner.
 The watchdog is comprised of multiple components, each configured seperately:
 
 ```
-{
+"appN": {
     "handler": {
         // Here comes the handler's configuration
     },
@@ -78,7 +130,8 @@ The watchdog is comprised of multiple components, each configured seperately:
 
 See the following section to understand each component configuration.
 
-## Handler configuration
+
+### Handler configuration
 
 The handler is the internal component that handles the actual actions taken, e.g. stop/start the target application.
 The amount of actions is unlimited, and each is fully configurable by the user.
@@ -87,7 +140,7 @@ Every action merely a command line that consists of a command and an array of ar
 
 The only pre-programmed command is the 'stop' command. See the 'stop action' for more information.
 
-### Custom actions
+#### Custom actions
 
 Every action specified under the handler should have the following configuration:
 
@@ -103,7 +156,7 @@ Every action specified under the handler should have the following configuration
 After defining a command, we can use it as an action in our different manifests.
 For more info, see the cycler manifest section for more info.
 
-### Stop action
+#### Stop action
 
 The watchdog can stop the target application using two different ways.
 
@@ -125,11 +178,11 @@ If you wish to specify a custom configuration, just use the following format (wh
 }
 ```
 
-### Restart action
+#### Restart action
 
 Since a restart is merely a stop -> start sequence, there is no specific configuration for the restart command.
 
-## Inspector configuration
+### Inspector configuration
 
 This module is responsible for spotting any active targets running on the system,
 and analyzing the amount of resources these applications are using.
@@ -152,7 +205,7 @@ The inspector can perform multiple checks, each configured seperately:
 The target configuration is always required, because otherwise the watchdog will be oblivious to the target.
 On the other hand, the different probes are optional, and don't require configuration if you don't use them.
 
-### Target spotter configuration
+#### Target spotter configuration
 
 The target spotter can identify running targets using multiple parameters.
 Its configuration is the value of the "target" key.
@@ -178,7 +231,7 @@ Example:
 }
 ```
 
-### Memory probe configuration
+#### Memory probe configuration
 
 The memory probe examines the target's memory usage.
 Its configuration is the value of the "memory" key.
@@ -202,7 +255,7 @@ Example:
 }
 ```
 
-### CPU probe configuration
+#### CPU probe configuration
 
 The CPU probe examines the target's CPU usage.
 Its configuration is the value of the "CPU" key.
