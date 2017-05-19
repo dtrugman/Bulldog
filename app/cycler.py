@@ -19,13 +19,14 @@ class Cycler(object):
 
     MANIFEST_ITEM = [KEY_CHECK, KEY_REACT]
 
-    def __init__(self, config, investigator):
-        self.logger = logging.getLogger(__name__)
+    def __init__(self, target_name, config, investigator):
+        self.target_name = target_name
+        self.logger = logging.getLogger(self.target_name)
 
         self._configure(config) # Must come first after logger init
 
         self.investigator = investigator
-        self.periodic_timer = PeriodicTimer(self.freq, self._trigger)
+        self.periodic_timer = PeriodicTimer(self.target_name, self.freq, self._trigger)
 
     def _configure(self, config):
         """

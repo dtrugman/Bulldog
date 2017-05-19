@@ -29,9 +29,11 @@ class Inspector(threading.Thread):
     KEY_TARGET = "target"
     KEY_REACTION = "reaction"
 
-    def __init__(self, config, handler):
+    def __init__(self, target_name, config, handler):
         threading.Thread.__init__(self)
-        self.logger = logging.getLogger(__name__)
+
+        self.target_name = target_name
+        self.logger = logging.getLogger(self.target_name)
 
         self._configure(config) # Must come first after logger init
 
@@ -48,13 +50,16 @@ class Inspector(threading.Thread):
         self.stopped = False
 
     def _init_probes(self):
-        self.spotter = Spotter(self.config[Inspector.KEY_TARGET])
+        self.spotter = Spotter(self.target_name,
+                               self.config[Inspector.KEY_TARGET])
 
         if Inspector.KEY_MEMORY in self.config:
-            self.mem_probe = MemoryProbe(self.config[Inspector.KEY_MEMORY])
+            self.mem_probe = MemoryProbe(self.target_name,
+                                         self.config[Inspector.KEY_MEMORY])
 
         if Inspector.KEY_CPU in self.config:
-            self.cpu_probe = CpuProbe(self.config[Inspector.KEY_CPU])
+            self.cpu_probe = CpuProbe(self.target_name,
+                                      self.config[Inspector.KEY_CPU])
 
     def _configure(self, config):
         """

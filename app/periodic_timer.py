@@ -11,8 +11,9 @@ class PeriodicTimer(object):
     that executes an action each time it's triggered
     """
 
-    def __init__(self, freq, action, *args, **kwargs):
-        self.logger = logging.getLogger(__name__)
+    def __init__(self, target_name, freq, action, *args, **kwargs):
+        self.target_name = target_name
+        self.logger = logging.getLogger(self.target_name)
         self.freq = freq
         self.action = action
         self.args = args

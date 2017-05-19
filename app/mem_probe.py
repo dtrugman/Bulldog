@@ -19,8 +19,9 @@ class MemoryProbe(object):
     DEFAULT_PERIOD = 0 # Single sample
     DEFAULT_SET = "uss" # Considered the most reliable metric
 
-    def __init__(self, config):
-        self.logger = logging.getLogger(__name__)
+    def __init__(self, target_name, config):
+        self.target_name = target_name
+        self.logger = logging.getLogger(self.target_name)
 
         self._configure(config) # Must come first after logger init
 

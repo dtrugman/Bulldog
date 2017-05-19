@@ -41,13 +41,13 @@ class Manager(object):
 
     def _intro(self):
         self.logger.critical("Starting")
-        self.logger.critical("----------------------------------------")
+        self.logger.critical("-----------------------------")
         self.logger.critical("Version: %s", Version.VERSION)
         self.logger.critical("Build:   %s", Version.BUILD)
-        self.logger.critical("----------------------------------------")
+        self.logger.critical("-----------------------------")
 
     def _outro(self):
-        self.logger.critical("----------------------------------------")
+        self.logger.critical("-----------------------------")
         self.logger.critical("Stopped")
 
     def _run(self):

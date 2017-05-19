@@ -14,13 +14,13 @@ class Watchdog(threading.Thread):
     A watchdog that monitors a single application
     """
 
-    def __init__(self, name, config):
+    def __init__(self, target_name, config):
         threading.Thread.__init__(self)
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger(target_name)
 
         self.stopped = threading.Event()
 
-        self.name = name
+        self.target_name = target_name
         self.config = config
 
         self.cycler = None
@@ -28,19 +28,22 @@ class Watchdog(threading.Thread):
         self.handler = None
 
     def _intro(self):
-        self.logger.info("Starting to monitor %s", self.name)
+        self.logger.info("Starting to monitor %s", self.target_name)
 
     def _outro(self):
         self.logger.info("Stopped")
 
     def _run(self):
-        self.handler = Handler(self.config["handler"])
+        self.handler = Handler(self.target_name,
+                               self.config["handler"])
 
-        self.inspector = Inspector(self.config["inspector"],
+        self.inspector = Inspector(self.target_name,
+                                   self.config["inspector"],
                                    self.handler)
         self.inspector.start()
 
-        self.cycler = Cycler(self.config["cycler"],
+        self.cycler = Cycler(self.target_name,
+                             self.config["cycler"],
                              self.inspector)
         self.cycler.start()
 

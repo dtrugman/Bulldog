@@ -10,7 +10,7 @@ class Globals(object):
     APP_NAME = "bulldog"
 
     LOG_FILE = APP_NAME + ".log"
-    LOG_FORMAT = "%(asctime)s :: %(levelname)s :: %(name)s :: %(message)s"
+    LOG_FORMAT = "%(asctime)s :: %(levelname)s :: %(name)s :: %(module)s :: %(message)s"
 
     PID_DIR = "/var/run"
     PID_FILE = PID_DIR + "/" + APP_NAME + ".pid"

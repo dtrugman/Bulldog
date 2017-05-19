@@ -16,8 +16,9 @@ class Spotter(object):
     KEY_CWD = "cwd"
     KEY_USERNAME = "username"
 
-    def __init__(self, config):
-        self.logger = logging.getLogger(__name__)
+    def __init__(self, target_name, config):
+        self.target_name = target_name
+        self.logger = logging.getLogger(self.target_name)
 
         self._configure(config) # Must come first after logger init
         self._compile_filters()
