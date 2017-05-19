@@ -46,11 +46,6 @@
             "target": {
                 "exe": "/home/dt/Documents/WatchDog/examples/cpu_eater.out"
             },
-            "memory": {
-                "threshold": 100000000,
-                "period": 1,
-                "set": "uss"
-            },
             "cpu": {
                 "threshold": 95
             }

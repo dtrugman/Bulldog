@@ -136,13 +136,16 @@ The inspector can perform multiple checks, each configured seperately:
         // REQUIRED: target spotter configuration, see relevant sub-chapter
     },
     "memory" {
-        // REQUIRED: memory probe configuration, see relevant sub-chapter
+        // OPTIONAL: memory probe configuration, see relevant sub-chapter
     },
     "cpu": {
-        // REQUIRED: CPU probe configuration, see relevant sub-chapter
+        // OPTIONAL: CPU probe configuration, see relevant sub-chapter
     }
 }
 ```
+
+The target configuration is always required, because otherwise the watchdog will be oblivious to the target.
+On the other hand, the different probes are optional, and don't require configuration if you don't use them.
 
 ### Target spotter configuration
 

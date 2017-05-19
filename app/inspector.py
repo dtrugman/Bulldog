@@ -35,19 +35,26 @@ class Inspector(threading.Thread):
 
         self._configure(config) # Must come first after logger init
 
+        self._init_probes()
+
+        self.checks = {
+            Inspector.KEY_RUNNING: self._check_running,
+            Inspector.KEY_MEMORY: self._check_memory,
+            Inspector.KEY_CPU: self._check_cpu
+        }
+
+        self.handler = handler
         self.queue = Queue.Queue()
         self.stopped = False
 
+    def _init_probes(self):
         self.spotter = Spotter(self.config[Inspector.KEY_TARGET])
-        self.mem_probe = MemoryProbe(self.config[Inspector.KEY_MEMORY])
-        self.cpu_probe = CpuProbe(self.config[Inspector.KEY_CPU])
 
-        self.handler = handler
-        self.checks = {
-            Inspector.KEY_RUNNING: lambda target: target is not None,
-            Inspector.KEY_MEMORY: self.mem_probe.valid,
-            Inspector.KEY_CPU: self.cpu_probe.valid
-        }
+        if Inspector.KEY_MEMORY in self.config:
+            self.mem_probe = MemoryProbe(self.config[Inspector.KEY_MEMORY])
+
+        if Inspector.KEY_CPU in self.config:
+            self.cpu_probe = CpuProbe(self.config[Inspector.KEY_CPU])
 
     def _configure(self, config):
         """
@@ -66,6 +73,23 @@ class Inspector(threading.Thread):
 
     def _outro(self):
         self.logger.info("Stopped")
+
+    def _check_running(self, target):
+        return target is not None
+
+    def _check_memory(self, target):
+        if not self.mem_probe:
+            self.logger.error("Memory check aborted, probe not configured!")
+            return True
+
+        return self.mem_probe.valid(target)
+
+    def _check_cpu(self, target):
+        if not self.cpu_probe:
+            self.logger.error("CPU check aborted, probe not configured!")
+            return True
+
+        return self.cpu_probe.valid(target)
 
     def _handle_target(self, target, reaction):
         self.handler.enqueue({
