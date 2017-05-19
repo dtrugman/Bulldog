@@ -36,8 +36,6 @@ You can choose to use one of the following ways to distribute this application:
 The application requires a single configuration file in JSON format to operate.
 The JSON is split into segments according to the internal modules of the app.
 
-## Configuration format
-
 The configuration file is a single JSON object.
 This root JSON object shoud contain exactly two keys:
 
@@ -55,7 +53,7 @@ This root JSON object shoud contain exactly two keys:
 }
 ```
 
-## Log configuration
+## Log
 
 The log infrastructure requires the following values:
 
@@ -71,13 +69,13 @@ Example:
 }
 ```
 
-### Dir configuration
+### Log dir
 
 Just specify an absolute or relative path.
 
 If you wish to write the log files to the same dir as the binary, just use "."
 
-### Level configuration
+### Log level
 
 The supported log levels are:
 
@@ -89,7 +87,7 @@ The supported log levels are:
 
 **The recommended value is 20 = INFO.**
 
-## Watchdog configuration
+## Watchdog
 
 The watchdog configuration may contain multiple keys, each is a custom name for an application we want to watch,
 and their respectful values are the configurations we should use for watching these applications.
@@ -131,7 +129,7 @@ The watchdog is comprised of multiple components, each configured seperately:
 See the following section to understand each component configuration.
 
 
-### Handler configuration
+### Handler
 
 The handler is the internal component that handles the actual actions taken, e.g. stop/start the target application.
 The amount of actions is unlimited, and each is fully configurable by the user.
@@ -182,7 +180,7 @@ If you wish to specify a custom configuration, just use the following format (wh
 
 Since a restart is merely a stop -> start sequence, there is no specific configuration for the restart command.
 
-### Inspector configuration
+### Inspector
 
 This module is responsible for spotting any active targets running on the system,
 and analyzing the amount of resources these applications are using.
@@ -205,7 +203,7 @@ The inspector can perform multiple checks, each configured seperately:
 The target configuration is always required, because otherwise the watchdog will be oblivious to the target.
 On the other hand, the different probes are optional, and don't require configuration if you don't use them.
 
-#### Target spotter configuration
+#### Target spotter
 
 The target spotter can identify running targets using multiple parameters.
 Its configuration is the value of the "target" key.
@@ -231,7 +229,7 @@ Example:
 }
 ```
 
-#### Memory probe configuration
+#### Memory probe
 
 The memory probe examines the target's memory usage.
 Its configuration is the value of the "memory" key.
@@ -255,7 +253,7 @@ Example:
 }
 ```
 
-#### CPU probe configuration
+#### CPU probe
 
 The CPU probe examines the target's CPU usage.
 Its configuration is the value of the "CPU" key.
@@ -276,3 +274,58 @@ Example:
     "period": 2
 }
 ```
+
+### Cycler
+
+The cycler is a basic time-based trigger.
+Every time the cycler fires, the watchdog starts running checks and reacts according to the results.
+
+The cycler has the following configurations:
+
+- frequency: How often should the cycler fire a trigger (in seconds)
+- manifest: How should the watchdog behave when an event is triggered, see the manifest section for more details
+
+Example:
+
+```
+"cycler": {
+    "freq": <value>,
+    "manifest": {
+        // The cycler event manifest
+    }
+}
+```
+
+#### Manifest
+
+The manifest is an array of pairs.
+Each pair consists of a array of checks and an array of reactions.
+
+Example:
+
+```
+"manifest": [
+    {
+        "check": [ "check1", "check2" ],
+        "reaction: [ "reaction1" ]
+    },
+    {
+        "check": [ "check1", "check3" ],
+        "reaction: [ "reaction9" ]
+    },
+    {
+        "check": [ "check2" ],
+        "reaction": [ "reaction2", "reaction17" ]
+    }
+]
+```
+
+Every check triggers an action from the Inspector (see the Inspector chapter for more information).
+Currently, the supported checks are:
+
+- running: Checks if the target is running, and if not, triggers the specified reactions
+- memory: Checks the target's memory according to the memory probe's constrains. If the target misbehaves, triggers the specified reactions
+- cpu: Checks the target's CPU usage according to the CPU probe's constrains. If the target misbehaves, triggers the specified reactions
+
+The reaction on the other hand are very customizable, and may vary according to your needs.
+Every Handler action defined may be used as a reaction (see the Handler chapter for more information).
