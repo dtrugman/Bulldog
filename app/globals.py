@@ -17,3 +17,5 @@ class Globals(object):
     PID_DIR = "/var/run"
     PID_FILE = PID_DIR + "/" + APP_NAME + ".pid"
     PID_ACQUIRE_TIMEOUT = 1
+
+    KILL_WAIT_TIMEOUT = 3

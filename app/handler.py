@@ -5,7 +5,10 @@ Defines the Handler class
 import logging
 import threading
 import subprocess
+import psutil
 import Queue
+
+from app.globals import Globals
 
 class Handler(threading.Thread):
     """
@@ -29,16 +32,18 @@ class Handler(threading.Thread):
         threading.Thread.__init__(self)
         self.logger = logging.getLogger(__name__)
 
-        self._configure(config) # Must come first after logger init
+        self._init_default_handlers()
+        self._configure(config)
 
         self.queue = Queue.Queue()
         self.stopped = False
 
-        self.handlers = {
-            Handler.KEY_STOP: self._target_stop,
-            Handler.KEY_START: self._target_start,
-            Handler.KEY_RESTART: self._target_restart
-        }
+    def _init_default_handlers(self):
+        # The handlers map holds pairs: <function, arg>
+        self.handlers = {}
+
+        if Handler.KEY_START not in self.handlers:
+            self.handlers[Handler.KEY_STOP] = (self._target_stop, None)
 
     def _parse_cmdline(self, value):
         """
@@ -82,16 +87,11 @@ class Handler(threading.Thread):
             # Save original config
             self.config = config
 
-            # Get configured stop action
-            # If none specified, we will use the default termination
-            # functionality of psutil
-            self.stop_cmd = []
-            if Handler.KEY_STOP in self.config:
-                self.stop_cmd = self._parse_cmdline(self.config[Handler.KEY_STOP])
-            self.logger.info("Stop cmdline: %s", self.stop_cmd)
-
-            self.start_cmd = self._parse_cmdline(self.config[Handler.KEY_START])
-            self.logger.info("Start cmdline: %s", self.start_cmd)
+            # Read configured actions
+            for key, value in self.config.iteritems():
+                cmdline = self._parse_cmdline(value)
+                self.handlers[key] = (self._target_action, cmdline)
+                self.logger.info("Added command[%s]: %s", key, cmdline)
         except KeyError as err:
             raise RuntimeError("Bad {0} configuration: {1}".format(__name__, err))
 
@@ -101,26 +101,25 @@ class Handler(threading.Thread):
     def _outro(self):
         self.logger.info("Stopped")
 
-    def _target_stop(self, target):
+    def _target_stop(self, target, args):
         if target is None:
             self.logger.info("Stop skipped, target not active")
             return
 
-        if self.stop_cmd:
-            subprocess.Popen(self.stop_cmd)
-        else:
+        try:
             target.terminate()
-            target.wait(timeout=3)
+            self.logger.info("Stop issued!")
+            target.wait(timeout=Globals.KILL_WAIT_TIMEOUT)
+            self.logger.info("Stop target successful!")
+        except psutil.TimeoutExpired:
+            self.logger.error("Stop target failed!")
 
-        self.logger.info("Stop issued!")
-
-    def _target_start(self, target):
-        subprocess.Popen(self.start_cmd)
-        self.logger.info("Start issued!")
-
-    def _target_restart(self, target):
-        self._target_stop(target)
-        self._target_start(target)
+    def _target_action(self, target, args):
+        try:
+            self.logger.info("Issued command [%s]", args)
+            subprocess.Popen(args)
+        except (OSError, ValueError) as err:
+            self.logger.error("Command failed! err: %s", err)
 
     def _process(self, request):
         target = request[Handler.KEY_TARGET]
@@ -132,7 +131,14 @@ class Handler(threading.Thread):
             else:
                 self.logger.info("Handling target [%s] pid [%d] -> Executing %s",
                                  target.name(), target.pid, action)
-            self.handlers[action](target)
+
+            if action not in self.handlers:
+                self.logger.error("Action %s aborted, action not configured!",
+                                  action)
+                continue
+
+            handler, args = self.handlers[action] # Get registered handler and args
+            handler(target, args) # Execute handler while passing target and args
 
     def enqueue(self, request):
         """

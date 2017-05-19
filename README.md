@@ -76,27 +76,32 @@ The watchdog is comprised of multiple components, each configured seperately:
 }
 ```
 
-See the following sub-chapters to understand each component configuration.
+See the following section to understand each component configuration.
 
 ## Handler configuration
 
 The handler is the internal component that handles the actual actions taken, e.g. stop/start the target application.
-Currently, the handler supports only three actions: stop, start & restart.
+The amount of actions is unlimited, and each is fully configurable by the user.
+Every action should have a unique name that identifies it.
+Every action merely a command line that consists of a command and an array of arguments.
 
-### Start action
+The only pre-programmed command is the 'stop' command. See the 'stop action' for more information.
 
-In order to start the target application, the watchdog must be able to execute it.
-To do so, it neets to receive two configuration parameters: cmd and args.
-The configuration for the start command is nested under the handler's configuration and looks like this:
+### Custom actions
+
+Every action specified under the handler should have the following configuration:
 
 ```
 "handler": {
-    "start": {
-        "cmd": "/path/to/app/exec",
+    "command-name": {
+        "cmd": "/path/to/exec",
         "args": [ "arg1", ... ]
     }
 }
 ```
+
+After defining a command, we can use it as an action in our different manifests.
+For more info, see the cycler manifest section for more info.
 
 ### Stop action
 
@@ -133,13 +138,13 @@ The inspector can perform multiple checks, each configured seperately:
 ```
 "inspector": {
     "target": {
-        // REQUIRED: target spotter configuration, see relevant sub-chapter
+        // REQUIRED: target spotter configuration, see relevant section
     },
     "memory" {
-        // OPTIONAL: memory probe configuration, see relevant sub-chapter
+        // OPTIONAL: memory probe configuration, see relevant section
     },
     "cpu": {
-        // OPTIONAL: CPU probe configuration, see relevant sub-chapter
+        // OPTIONAL: CPU probe configuration, see relevant section
     }
 }
 ```
