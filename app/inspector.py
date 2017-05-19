@@ -90,7 +90,7 @@ class Inspector(threading.Thread):
         return self.cpu_probe.valid(target)
 
     def _handle_target(self, target, reaction):
-        self.handler.enqueue({
+        self.handler.process({
             Inspector.KEY_TARGET: target,
             Inspector.KEY_REACTION: reaction
         })

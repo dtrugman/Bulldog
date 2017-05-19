@@ -35,7 +35,6 @@ class Watchdog(threading.Thread):
 
     def _run(self):
         self.handler = Handler(self.config["handler"])
-        self.handler.start()
 
         self.inspector = Inspector(self.config["inspector"],
                                    self.handler)
@@ -51,9 +50,6 @@ class Watchdog(threading.Thread):
 
         if self.inspector:
             self.inspector.stop()
-
-        if self.handler:
-            self.handler.stop()
 
     def run(self):
         self._intro()

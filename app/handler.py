@@ -3,14 +3,11 @@ Defines the Handler class
 """
 
 import logging
-import threading
-import subprocess
 import psutil
-import Queue
 
 from app.globals import Globals
 
-class Handler(threading.Thread):
+class Handler(object):
     """
     A handler class that can stop/start/restart
     the target process
@@ -29,14 +26,10 @@ class Handler(threading.Thread):
     CMD_LINE_ITEM = [KEY_CMD, KEY_ARGS]
 
     def __init__(self, config):
-        threading.Thread.__init__(self)
         self.logger = logging.getLogger(__name__)
 
         self._init_default_handlers()
         self._configure(config)
-
-        self.queue = Queue.Queue()
-        self.stopped = False
 
     def _init_default_handlers(self):
         # The handlers map holds pairs: <function, arg>
@@ -93,12 +86,6 @@ class Handler(threading.Thread):
         except KeyError as err:
             raise RuntimeError("Bad {0} configuration: {1}".format(__name__, err))
 
-    def _intro(self):
-        self.logger.info("Starting")
-
-    def _outro(self):
-        self.logger.info("Stopped")
-
     def _target_stop(self, target, args):
         if target is None:
             self.logger.info("Stop skipped, target not active")
@@ -115,11 +102,14 @@ class Handler(threading.Thread):
     def _target_action(self, target, args):
         try:
             self.logger.info("Issued command [%s]", args)
-            subprocess.Popen(args)
+            psutil.Popen(args)
         except (OSError, ValueError) as err:
             self.logger.error("Command failed! err: %s", err)
 
-    def _process(self, request):
+    def process(self, request):
+        """
+        Process a handling request
+        """
         target = request[Handler.KEY_TARGET]
         reaction = request[Handler.KEY_REACTION]
         for action in reaction:
@@ -137,30 +127,3 @@ class Handler(threading.Thread):
 
             handler, args = self.handlers[action] # Get registered handler and args
             handler(target, args) # Execute handler while passing target and args
-
-    def enqueue(self, request):
-        """
-        Add a handling request
-        """
-        self.queue.put(request)
-
-    def stop(self):
-        """
-        Stop the handler
-        """
-        self.stopped = True
-        # Insert fake item to ensure we exit the blocking the get()
-        self.queue.put("*")
-
-    def run(self):
-        self._intro()
-        while True:
-            request = self.queue.get()
-            if self.stopped:
-                break
-
-            try:
-                self._process(request)
-            except OSError as err:
-                self.logger.info("Handling failed: %s", err)
-        self._outro()
