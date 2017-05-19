@@ -4,6 +4,7 @@ Defines the Runner class
 
 import platform
 
+from app.config_parser import ConfigParser
 from app.unix_service import UnixService
 from app.win_service import WinService
 from app.manager import Manager
@@ -14,15 +15,15 @@ class Runner(object):
     """
 
     @staticmethod
-    def _run_app(config_path):
-        Manager(config_path).start()
+    def _run_app(config):
+        Manager(config).start()
 
     @staticmethod
-    def _run_service(config_path):
+    def _run_service(config):
         if platform.system() == "Linux":
-            UnixService.start(config_path)
+            UnixService.start(config)
         elif platform.system() == "Windows":
-            WinService.start(config_path)
+            WinService.start(config)
         else:
             raise RuntimeError("Unsupported platform")
 
@@ -32,9 +33,11 @@ class Runner(object):
         Run the application
         """
         try:
+            config = ConfigParser.load(config_path)
+
             if service:
-                Runner._run_service(config_path)
+                Runner._run_service(config)
             else:
-                Runner._run_app(config_path)
+                Runner._run_app(config)
         except Exception as err:
             print "Error: {0}".format(err)

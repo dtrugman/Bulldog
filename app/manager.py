@@ -5,7 +5,6 @@ Defines the Manager class
 import logging
 import threading
 
-from app.config_parser import ConfigParser
 from app.globals import Globals
 from app.version import Version
 from app.watchdog import Watchdog
@@ -15,16 +14,15 @@ class Manager(object):
     Watchdogs` manager
     """
 
-    def __init__(self, config_path):
+    def __init__(self, config):
+        self.config = config
+
         logging.basicConfig(level=logging.DEBUG,
                             filename=Globals.LOG_FILE,
                             format=Globals.LOG_FORMAT)
         self.logger = logging.getLogger(__name__)
 
         self.stopped = threading.Event()
-
-        self.config_path = config_path
-        self.config = None
 
         self.watchdogs = {}
 
@@ -39,16 +37,11 @@ class Manager(object):
         self.logger.info("Stopped")
 
     def _run(self):
-        self.config = ConfigParser.load(self.config_path)
-
         for app in self.config:
             self.watchdogs[app] = Watchdog(app, self.config[app])
             self.watchdogs[app].start()
 
     def _stop(self):
-        if not self.config:
-            return
-
         for app in self.config:
             if self.watchdogs[app]:
                 self.watchdogs[app].stop()
