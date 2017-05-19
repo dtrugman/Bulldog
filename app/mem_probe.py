@@ -29,21 +29,18 @@ class MemoryProbe(object):
         Reads and validates configuration
         """
         try:
-            self.logger.info("Configuration:")
-
             # Save original config
             self.config = config
 
             self.threshold = self.config.get(MemoryProbe.KEY_THRESHOLD,
                                              MemoryProbe.DEFAULT_THRESHOLD)
-            self.logger.info("Threshold: %d", self.threshold)
 
             self.period = self.config.get(MemoryProbe.KEY_PERIOD,
                                           MemoryProbe.DEFAULT_PERIOD)
-            self.logger.info("Period: %d", self.period)
 
             self.set = self.config.get(MemoryProbe.KEY_SET,
                                        MemoryProbe.DEFAULT_SET)
+
             self.samplers = {
                 "rss": lambda mem: mem.rss,
                 "vms": lambda mem: mem.vms,
@@ -53,7 +50,9 @@ class MemoryProbe(object):
             self.sampler = self.samplers.get(self.set)
             if self.sampler is None:
                 raise KeyError("Bad memory set[{0}]".format(self.set))
-            self.logger.info("Set: %s", self.set)
+
+            self.logger.info("Config: Threshold[%d], Period[%d], Set[%s]",
+                             self.threshold, self.period, self.set)
         except KeyError as err:
             raise RuntimeError("Bad {0} configuration: {1}".format(__name__, err))
 

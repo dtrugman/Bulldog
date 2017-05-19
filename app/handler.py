@@ -82,8 +82,6 @@ class Handler(threading.Thread):
         Reads and validates configuration
         """
         try:
-            self.logger.info("Configuration:")
-
             # Save original config
             self.config = config
 

@@ -26,18 +26,17 @@ class CpuProbe(object):
         Reads and validates configuration
         """
         try:
-            self.logger.info("Configuration:")
-
             # Save original config
             self.config = config
 
             self.threshold = self.config.get(CpuProbe.KEY_THRESHOLD,
                                              CpuProbe.DEFAULT_THRESHOLD)
-            self.logger.info("Threshold: %d", self.threshold)
 
             self.period = self.config.get(CpuProbe.KEY_PERIOD,
                                           CpuProbe.DEFAULT_PERIOD)
-            self.logger.info("Period: %d", self.period)
+
+            self.logger.info("Config: Threshold[%d] Period[%d]",
+                             self.threshold, self.period)
         except KeyError as err:
             raise RuntimeError("Bad {0} configuration: {1}".format(__name__, err))
 

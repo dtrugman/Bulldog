@@ -32,14 +32,11 @@ class Cycler(object):
         Reads and validates configuration
         """
         try:
-            self.logger.info("Configuration:")
-
             # Save original config
             self.config = config
 
             # Get configured frequency
             self.freq = self.config[Cycler.KEY_FREQ]
-            self.logger.info("Freq: %d sec", self.freq)
 
             # Get and check configured manifest
             # Rules:
@@ -64,7 +61,9 @@ class Cycler(object):
                         if not isinstance(val, basestring):
                             raise KeyError("Manifest item[{0}] bad key[{1}] value: "
                                            "contains non-string".format(idx, key))
-            self.logger.info("Manifest: %s", str(self.manifest))
+
+            self.logger.info("Config: Freq[%d]s Manifest[%s]",
+                             self.freq, self.manifest)
         except KeyError as err:
             raise RuntimeError("Bad {0} configuration: {1}".format(__name__, err))
 

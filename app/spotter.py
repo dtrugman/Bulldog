@@ -29,11 +29,9 @@ class Spotter(object):
         Reads and validates configuration
         """
         try:
-            self.logger.info("Configuration:")
-
             # Save original config
             self.config = config
-            self.logger.info("Target: %s", self.config)
+            self.logger.info("Config: %s", self.config)
         except KeyError as err:
             raise RuntimeError("Bad Spotter configuration: " + str(err))
 
