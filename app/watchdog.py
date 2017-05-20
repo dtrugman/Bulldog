@@ -18,6 +18,7 @@ class Watchdog(threading.Thread):
 
     KEY_HANDLER = "handler"
     KEY_INSPECTOR = "inspector"
+    KEY_TRIGGERS = "triggers"
     KEY_CYCLER = "cycler"
     KEY_REST = "rest"
 
@@ -51,15 +52,19 @@ class Watchdog(threading.Thread):
                                    self.handler)
         self.inspector.start()
 
-        self.cycler = Cycler(self.target_name,
-                             self.config[Watchdog.KEY_CYCLER],
-                             self.inspector)
-        #self.cycler.start()
+        triggers = self.config[Watchdog.KEY_TRIGGERS]
 
-        self.rest_service = RestService(self.target_name,
-                                        self.config[Watchdog.KEY_REST],
-                                        self.inspector)
-        self.rest_service.start()
+        if Watchdog.KEY_CYCLER in triggers:
+            self.cycler = Cycler(self.target_name,
+                                 triggers[Watchdog.KEY_CYCLER],
+                                 self.inspector)
+            self.cycler.start()
+
+        if Watchdog.KEY_REST in triggers:
+            self.rest_service = RestService(self.target_name,
+                                            triggers[Watchdog.KEY_REST],
+                                            self.inspector)
+            self.rest_service.start()
 
     def _stop(self):
         if self.cycler:

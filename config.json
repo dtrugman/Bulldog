@@ -25,22 +25,24 @@
                     "threshold": 95
                 }
             },
-            "cycler": {
-                "freq": 5,
-                "manifest": [
-                    {
-                        "check": [ "running" ],
-                        "reaction": [ "start" ]
-                    },
-                    {
-                        "check": [ "memory", "cpu" ],
-                        "reaction": [ "restart" ]
-                    }
-                ]
-            },
-            "rest": {
-                "ip": "localhost",
-                "port": 8000
+            "triggers": {
+                "cycler": {
+                    "freq": "5",
+                    "manifest": [
+                        {
+                            "check": [ "running" ],
+                            "reaction": [ "start" ]
+                        },
+                        {
+                            "check": [ "memory", "cpu" ],
+                            "reaction": [ "restart" ]
+                        }
+                    ]
+                },
+                "rest": {
+                    "ip": "localhost",
+                    "port": 8000
+                }
             }
         },
         "cpu_eater":
@@ -59,18 +61,20 @@
                     "threshold": 95
                 }
             },
-            "cycler": {
-                "freq": 3,
-                "manifest": [
-                    {
-                        "check": [ "running" ],
-                        "reaction": [ "start" ]
-                    },
-                    {
-                        "check": [ "cpu" ],
-                        "reaction": [ "restart" ]
-                    }
-                ]
+            "triggers": {
+                "cycler": {
+                    "freq": 3,
+                    "manifest": [
+                        {
+                            "check": [ "running" ],
+                            "reaction": [ "start" ]
+                        },
+                        {
+                            "check": [ "cpu" ],
+                            "reaction": [ "restart" ]
+                        }
+                    ]
+                }
             }
         }
     }
