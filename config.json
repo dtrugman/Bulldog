@@ -26,7 +26,7 @@
                 }
             },
             "cycler": {
-                "freq": "5",
+                "freq": 10,
                 "manifest": [
                     {
                         "check": [ "running" ],
@@ -34,7 +34,7 @@
                     },
                     {
                         "check": [ "memory", "cpu" ],
-                        "reaction": [ "restart" ]
+                        "reaction": [ "stop", "start" ]
                     }
                 ]
             }
@@ -56,7 +56,7 @@
                 }
             },
             "cycler": {
-                "freq": 3,
+                "freq": 15,
                 "manifest": [
                     {
                         "check": [ "running" ],
@@ -64,7 +64,7 @@
                     },
                     {
                         "check": [ "cpu" ],
-                        "reaction": [ "restart" ]
+                        "reaction": [ "stop", "start" ]
                     }
                 ]
             }
