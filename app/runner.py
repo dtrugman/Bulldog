@@ -16,12 +16,10 @@ class Runner(object):
 
     @staticmethod
     def _run_app(config):
-        print "Running as application"
         Manager.run(config)
 
     @staticmethod
     def _run_service(config):
-        print "Running as service"
         if platform.system() == "Linux":
             UnixService.start(config)
         elif platform.system() == "Windows":
