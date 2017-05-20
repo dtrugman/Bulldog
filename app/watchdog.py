@@ -5,9 +5,6 @@ Defines the Watchdog class
 import logging
 import threading
 
-from app.triggers.time.cycler import Cycler
-from app.triggers.http.rest import RestService
-
 from app.inspector import Inspector
 from app.handler import Handler
 
@@ -55,12 +52,14 @@ class Watchdog(threading.Thread):
         triggers = self.config[Watchdog.KEY_TRIGGERS]
 
         if Watchdog.KEY_CYCLER in triggers:
+            from app.triggers.time.cycler import Cycler
             self.cycler = Cycler(self.target_name,
                                  triggers[Watchdog.KEY_CYCLER],
                                  self.inspector)
             self.cycler.start()
 
         if Watchdog.KEY_REST in triggers:
+            from app.triggers.http.rest import RestService
             self.rest_service = RestService(self.target_name,
                                             triggers[Watchdog.KEY_REST],
                                             self.inspector)
