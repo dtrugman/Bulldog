@@ -99,3 +99,6 @@ bin/dist
 bin/build
 rpm/pkgs
 deb/pkgs
+
+# Ignore junk directory
+junk
