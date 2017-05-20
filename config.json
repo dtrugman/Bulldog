@@ -8,13 +8,13 @@
         {
             "handler": {
                 "start": {
-                    "cmd": "/home/dt/Documents/WatchDog/examples/mem_eater.out",
+                    "cmd": "/home/dt/Documents/Bulldog/examples/mem_eater.out",
                     "args": [ ]
                 }
             },
             "inspector": {
                 "target": {
-                    "exe": "/home/dt/Documents/WatchDog/examples/mem_eater.out"
+                    "exe": "/home/dt/Documents/Bulldog/examples/mem_eater.out"
                 },
                 "memory": {
                     "threshold": 100000000,
@@ -43,13 +43,13 @@
         {
             "handler": {
                 "start": {
-                    "cmd": "/home/dt/Documents/WatchDog/examples/cpu_eater.out",
+                    "cmd": "/home/dt/Documents/Bulldog/examples/cpu_eater.out",
                     "args": [ ]
                 }
             },
             "inspector": {
                 "target": {
-                    "exe": "/home/dt/Documents/WatchDog/examples/cpu_eater.out"
+                    "exe": "/home/dt/Documents/Bulldog/examples/cpu_eater.out"
                 },
                 "cpu": {
                     "threshold": 95
