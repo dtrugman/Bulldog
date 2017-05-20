@@ -71,9 +71,9 @@ class MemoryProbe(object):
         Probe the target's current memory usage
         Returns True if the target's memory is withing limits or not active(!)
         """
-        self.logger.info("Probing target memory usage")
+        self.logger.debug("Probing target memory usage")
         if target is None:
-            self.logger.info("Target not running, skipping")
+            self.logger.debug("Target not running, skipping")
             return True
 
         # Always sample once(!)

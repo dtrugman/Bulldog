@@ -62,7 +62,7 @@ class Spotter(object):
         except psutil.AccessDenied:
             if proc.pid not in self.errors_history or proc.name() != self.errors_history[proc.pid]:
                 self.errors_history[proc.pid] = proc.name()
-                self.logger.info("Cannot check process[%s] pid[%d]", proc.name(), proc.pid)
+                self.logger.warning("Cannot check process[%s] pid[%d]", proc.name(), proc.pid)
 
     def get_targets(self):
         """

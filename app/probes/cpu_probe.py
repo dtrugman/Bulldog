@@ -52,9 +52,9 @@ class CpuProbe(object):
         Probe the target's current CPU usage
         Returns True if the target's CPU is withing limits or not active(!)
         """
-        self.logger.info("Probing target CPU usage")
+        self.logger.debug("Probing target CPU usage")
         if target is None:
-            self.logger.info("Target not running, skipping")
+            self.logger.debug("Target not running, skipping")
             return True
 
         # Always sample once(!)

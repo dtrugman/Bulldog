@@ -103,17 +103,17 @@ class Inspector(threading.Thread):
 
     def _process_target(self, target, request):
         if target is None:
-            self.logger.info("Processing an inactive target")
+            self.logger.debug("Processing an inactive target")
         else:
-            self.logger.info("Processting target [%s] pid [%d]", target.name(), target.pid)
+            self.logger.debug("Processting target [%s] pid [%d]", target.name(), target.pid)
 
         action_required = False
 
         reaction = request[Inspector.KEY_REACTION]
         for check in request[Inspector.KEY_CHECK]:
-            self.logger.info("Processing request: %s -> %s", check, reaction)
+            self.logger.debug("Processing request: %s -> %s", check, reaction)
             if not self.checks[check](target):
-                self.logger.info("Check [%s] failed, action required!", check)
+                self.logger.warning("Check [%s] failed, action required!", check)
                 action_required = True
                 break
 

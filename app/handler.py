@@ -94,15 +94,15 @@ class Handler(object):
 
         try:
             target.terminate()
-            self.logger.info("Stop issued!")
+            self.logger.warning("Stop issued!")
             target.wait(timeout=Globals.KILL_WAIT_TIMEOUT)
-            self.logger.info("Stop target successful!")
+            self.logger.warning("Stop target successful!")
         except psutil.TimeoutExpired:
             self.logger.error("Stop target failed!")
 
     def _target_action(self, target, args):
         try:
-            self.logger.info("Issued command [%s]", args)
+            self.logger.warning("Issued command [%s]", args)
             psutil.Popen(args)
         except (OSError, ValueError) as err:
             self.logger.error("Command failed! err: %s", err)
@@ -113,13 +113,13 @@ class Handler(object):
         """
         target = request[Handler.KEY_TARGET]
         if target is None:
-            self.logger.info("Handling an inactive target")
+            self.logger.debug("Handling an inactive target")
         else:
-            self.logger.info("Handling target [%s] pid [%d]", target.name(), target.pid)
+            self.logger.debug("Handling target [%s] pid [%d]", target.name(), target.pid)
 
         reaction = request[Handler.KEY_REACTION]
         for action in reaction:
-            self.logger.info("Executing %s", action)
+            self.logger.warning("Executing %s", action)
             if action not in self.handlers:
                 self.logger.error("Action %s aborted, action not configured!", action)
                 continue

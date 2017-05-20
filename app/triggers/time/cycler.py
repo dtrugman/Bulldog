@@ -77,7 +77,7 @@ class Cycler(object):
 
     def _trigger(self):
         for item in self.manifest:
-            self.logger.info("Enqueuing request: %s", item)
+            self.logger.debug("Enqueuing request: %s", item)
             self.investigator.enqueue(item)
 
     def stop(self):
