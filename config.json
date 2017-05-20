@@ -1,7 +1,7 @@
 {
     "log": {
         "dir": ".",
-        "level": 10
+        "level": 20
     },
     "watchdogs":{
         "mem_eater":
