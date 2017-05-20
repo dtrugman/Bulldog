@@ -29,7 +29,18 @@ You can choose to use one of the following ways to distribute this application:
 
 - Integrate this code into your existing application
 - Create a binary executable by running `generate.sh` from inside the `bin` directory
-- Craete *.rpm and *.deb packages by running `pack.sh` from the root directory
+- Create *.rpm and *.deb packages by running `pack.sh` from the root directory
+
+## rpm/deb
+
+When you create a such a package, it includes:
+
+- The binary executable created by running `generate.sh` from inside the `bin` directory
+- The SysV init script from the project's root dir
+- The config.json file from the root dir
+- The LICENSE and README files
+
+So, make sure to update the configuration file according to your needs.
 
 # Configuration
 
