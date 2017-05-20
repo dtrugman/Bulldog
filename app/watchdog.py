@@ -66,6 +66,9 @@ class Watchdog(threading.Thread):
             self.rest_service.start()
 
     def _stop(self):
+        if self.rest_service:
+            self.rest_service.stop()
+
         if self.cycler:
             self.cycler.stop()
 
@@ -74,18 +77,19 @@ class Watchdog(threading.Thread):
             self.inspector.join()
 
     def run(self):
+        """
+        Thread entry point
+        """
         try:
             self._intro()
             self._run()
-            self.stopped.wait()
         except Exception as err:
             self.logger.error("Error!\n%s", err)
-        finally:
-            self._stop()
-            self._outro()
+            self.stop()
 
     def stop(self):
         """
-        Stop watchdog
+        Stop module
         """
-        self.stopped.set()
+        self._stop()
+        self._outro()

@@ -37,20 +37,20 @@ class Manager(object):
         logging.basicConfig(level=log_level,
                             filename=log_file,
                             format=log_format)
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger('global')
 
     def _intro(self):
-        self.logger.critical("=============================")
+        self.logger.critical("==================================")
         self.logger.critical("Starting")
-        self.logger.critical("-----------------------------")
+        self.logger.critical("----------------------------------")
         self.logger.critical("Version: %s", Version.VERSION)
         self.logger.critical("Build:   %s", Version.BUILD)
-        self.logger.critical("=============================")
+        self.logger.critical("==================================")
 
     def _outro(self):
-        self.logger.critical("=============================")
+        self.logger.critical("==================================")
         self.logger.critical("Stopped")
-        self.logger.critical("=============================\n\n\n")
+        self.logger.critical("==================================\n\n\n")
 
     def _run(self):
         watchdogs = self.config[ConfigParser.KEY_WATCHDOGS]
@@ -69,18 +69,12 @@ class Manager(object):
         """
         Start module
         """
-        try:
-            self._intro()
-            self._run()
-            self.stopped.wait()
-        except Exception as err:
-            self.logger.error("Error!\n%s", err)
-        finally:
-            self._stop()
-            self._outro()
+        self._intro()
+        self._run()
 
     def stop(self):
         """
         Stop module
         """
-        self.stopped.set()
+        self._stop()
+        self._outro()

@@ -16,10 +16,15 @@ class Runner(object):
 
     @staticmethod
     def _run_app(config):
-        Manager(config).start()
+        print "Running as application"
+        manager = Manager(config)
+        manager.start()
+        raw_input("Press any key to terminate")
+        manager.stop()
 
     @staticmethod
     def _run_service(config):
+        print "Running as service"
         if platform.system() == "Linux":
             UnixService.start(config)
         elif platform.system() == "Windows":
