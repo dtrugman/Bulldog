@@ -22,7 +22,7 @@ BIN_PATH=/usr/local/bin/${APP_NAME}
 PID_PATH=/var/run/${APP_NAME}.pid
 
 start() {
-    sudo ${BIN_PATH}/${APP_NAME} service ${CONF_NAME} &> /dev/null &
+    sudo ${BIN_PATH}/${APP_NAME} service ${BIN_PATH}/${CONF_NAME} &> /dev/null &
 }
 
 stop() {
