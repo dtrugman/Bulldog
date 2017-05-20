@@ -8,9 +8,6 @@ import Queue
 
 from app.spotter import Spotter
 
-from app.probes.mem_probe import MemoryProbe
-from app.probes.cpu_probe import CpuProbe
-
 class Inspector(threading.Thread):
     """
     A class that receives inspection & handling requests
@@ -53,11 +50,15 @@ class Inspector(threading.Thread):
         self.spotter = Spotter(self.target_name,
                                self.config[Inspector.KEY_TARGET])
 
+        self.mem_probe = None
         if Inspector.KEY_MEMORY in self.config:
+            from app.probes.mem_probe import MemoryProbe
             self.mem_probe = MemoryProbe(self.target_name,
                                          self.config[Inspector.KEY_MEMORY])
 
+        self.cpu_probe = None
         if Inspector.KEY_CPU in self.config:
+            from app.probes.cpu_probe import CpuProbe
             self.cpu_probe = CpuProbe(self.target_name,
                                       self.config[Inspector.KEY_CPU])
 
