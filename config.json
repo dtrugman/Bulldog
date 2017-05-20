@@ -37,6 +37,10 @@
                         "reaction": [ "restart" ]
                     }
                 ]
+            },
+            "rest": {
+                "ip": "localhost",
+                "port": 8000
             }
         },
         "cpu_eater":
