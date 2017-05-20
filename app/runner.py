@@ -17,10 +17,7 @@ class Runner(object):
     @staticmethod
     def _run_app(config):
         print "Running as application"
-        manager = Manager(config)
-        manager.start()
-        raw_input("Press any key to terminate")
-        manager.stop()
+        Manager.run(config)
 
     @staticmethod
     def _run_service(config):

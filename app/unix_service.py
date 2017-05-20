@@ -15,7 +15,7 @@ class UnixService(object):
     """
 
     @staticmethod
-    def start(config_path):
+    def start(config):
         """
         Start the service
         """
@@ -24,4 +24,4 @@ class UnixService(object):
         context.pidfile = daemon.pidfile.TimeoutPIDLockFile(Globals.PID_FILE,
                                                             Globals.PID_ACQUIRE_TIMEOUT)
         with context:
-            Manager(config_path).start()
+            Manager.run(config)

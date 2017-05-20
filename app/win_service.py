@@ -8,8 +8,8 @@ class WinService(object):
     """
 
     @staticmethod
-    def start(config_path):
+    def start(config):
         """
         Start the service
         """
-        print "Starting " + config_path
+        print "Starting " + config

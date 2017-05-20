@@ -2,6 +2,7 @@
 Defines the Manager class
 """
 
+import signal
 import logging
 import threading
 
@@ -52,7 +53,7 @@ class Manager(object):
         self.logger.critical("Stopped")
         self.logger.critical("==================================\n\n\n")
 
-    def _run(self):
+    def _start(self):
         watchdogs = self.config[ConfigParser.KEY_WATCHDOGS]
         for app in watchdogs:
             self.watchdogs[app] = Watchdog(app, watchdogs[app])
@@ -70,7 +71,7 @@ class Manager(object):
         Start module
         """
         self._intro()
-        self._run()
+        self._start()
 
     def stop(self):
         """
@@ -78,3 +79,16 @@ class Manager(object):
         """
         self._stop()
         self._outro()
+
+    @staticmethod
+    def run(config):
+        """
+        This is a static wrapper around manager
+        It handles signals and graceful termination
+        """
+        try:
+            manager = Manager(config)
+            manager.start()
+            signal.pause()
+        except (KeyboardInterrupt, SystemExit):
+            manager.stop()
