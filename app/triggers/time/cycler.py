@@ -37,7 +37,8 @@ class Cycler(object):
             self.config = config
 
             # Get configured frequency
-            self.freq = self.config[Cycler.KEY_FREQ]
+            # Allow both numbers and string by using a cast
+            self.freq = int(self.config[Cycler.KEY_FREQ])
 
             # Get and check configured manifest
             # Rules:
@@ -65,7 +66,7 @@ class Cycler(object):
 
             self.logger.info("Config: Freq[%d]s Manifest[%s]",
                              self.freq, self.manifest)
-        except KeyError as err:
+        except (KeyError, TypeError) as err:
             raise RuntimeError("Bad {0} configuration: {1}".format(__name__, err))
 
     def _intro(self):
