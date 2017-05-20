@@ -39,7 +39,8 @@ class PeriodicTimer(object):
         """
         Stop the periodic timer
         """
-        self.timer.cancel()
+        if self.timer:
+            self.timer.cancel()
         self._outro()
 
     def start(self):
