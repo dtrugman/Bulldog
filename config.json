@@ -25,24 +25,18 @@
                     "threshold": 95
                 }
             },
-            "triggers": {
-                "cycler": {
-                    "freq": "5",
-                    "manifest": [
-                        {
-                            "check": [ "running" ],
-                            "reaction": [ "start" ]
-                        },
-                        {
-                            "check": [ "memory", "cpu" ],
-                            "reaction": [ "restart" ]
-                        }
-                    ]
-                },
-                "rest": {
-                    "ip": "localhost",
-                    "port": 8000
-                }
+            "cycler": {
+                "freq": "5",
+                "manifest": [
+                    {
+                        "check": [ "running" ],
+                        "reaction": [ "start" ]
+                    },
+                    {
+                        "check": [ "memory", "cpu" ],
+                        "reaction": [ "restart" ]
+                    }
+                ]
             }
         },
         "cpu_eater":
@@ -61,20 +55,18 @@
                     "threshold": 95
                 }
             },
-            "triggers": {
-                "cycler": {
-                    "freq": 3,
-                    "manifest": [
-                        {
-                            "check": [ "running" ],
-                            "reaction": [ "start" ]
-                        },
-                        {
-                            "check": [ "cpu" ],
-                            "reaction": [ "restart" ]
-                        }
-                    ]
-                }
+            "cycler": {
+                "freq": 3,
+                "manifest": [
+                    {
+                        "check": [ "running" ],
+                        "reaction": [ "start" ]
+                    },
+                    {
+                        "check": [ "cpu" ],
+                        "reaction": [ "restart" ]
+                    }
+                ]
             }
         }
     }
