@@ -112,18 +112,16 @@ class Handler(object):
         Process a handling request
         """
         target = request[Handler.KEY_TARGET]
+        if target is None:
+            self.logger.info("Handling an inactive target")
+        else:
+            self.logger.info("Handling target [%s] pid [%d]", target.name(), target.pid)
+
         reaction = request[Handler.KEY_REACTION]
         for action in reaction:
-            if target is None:
-                self.logger.info("Handling an inactive target -> Executing %s",
-                                 action)
-            else:
-                self.logger.info("Handling target [%s] pid [%d] -> Executing %s",
-                                 target.name(), target.pid, action)
-
+            self.logger.info("Executing %s", action)
             if action not in self.handlers:
-                self.logger.error("Action %s aborted, action not configured!",
-                                  action)
+                self.logger.error("Action %s aborted, action not configured!", action)
                 continue
 
             handler, args = self.handlers[action] # Get registered handler and args
