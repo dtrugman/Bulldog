@@ -44,10 +44,11 @@ class RestService(object):
             self.ip = self.config[RestService.KEY_IP]
 
             # Get configured port
-            self.port = self.config[RestService.KEY_PORT]
+            # Allow both strings and numbers by using a cast here
+            self.port = str(self.config[RestService.KEY_PORT])
 
-            self.logger.info("Config: IP[%d] Port[%s]", self.ip, self.port)
-        except KeyError as err:
+            self.logger.info("Config: IP[%s] Port[%s]", self.ip, self.port)
+        except (KeyError, TypeError) as err:
             raise RuntimeError("Bad {0} configuration: {1}".format(__name__, err))
 
     def _intro(self):
