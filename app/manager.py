@@ -40,15 +40,17 @@ class Manager(object):
         self.logger = logging.getLogger(__name__)
 
     def _intro(self):
+        self.logger.critical("=============================")
         self.logger.critical("Starting")
         self.logger.critical("-----------------------------")
         self.logger.critical("Version: %s", Version.VERSION)
         self.logger.critical("Build:   %s", Version.BUILD)
-        self.logger.critical("-----------------------------")
+        self.logger.critical("=============================")
 
     def _outro(self):
-        self.logger.critical("-----------------------------")
+        self.logger.critical("=============================")
         self.logger.critical("Stopped")
+        self.logger.critical("=============================\n\n\n")
 
     def _run(self):
         watchdogs = self.config[ConfigParser.KEY_WATCHDOGS]
@@ -61,6 +63,7 @@ class Manager(object):
         for app in watchdogs:
             if self.watchdogs[app]:
                 self.watchdogs[app].stop()
+                self.watchdogs[app].join()
 
     def start(self):
         """

@@ -71,6 +71,7 @@ class Watchdog(threading.Thread):
 
         if self.inspector:
             self.inspector.stop()
+            self.inspector.join()
 
     def run(self):
         try:
