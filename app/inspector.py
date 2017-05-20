@@ -8,8 +8,8 @@ import Queue
 
 from app.spotter import Spotter
 
-from app.mem_probe import MemoryProbe
-from app.cpu_probe import CpuProbe
+from app.probes.mem_probe import MemoryProbe
+from app.probes.cpu_probe import CpuProbe
 
 class Inspector(threading.Thread):
     """
